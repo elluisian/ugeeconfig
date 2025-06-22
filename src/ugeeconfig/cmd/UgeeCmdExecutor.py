@@ -1,4 +1,4 @@
-from ..defconfs import *
+from ..DefaultConfigs import *
 from ..xml.UgeeElement import *
 
 from .UgeeCmdExceptions import *

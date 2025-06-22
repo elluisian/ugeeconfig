@@ -371,6 +371,7 @@ def multiple_tablet_key_set_custom_action(params, v):
     device = params[0]
     tabkey = multiget_tablet_keys_extract(params[1])
     __get_customactdata(__get_tabkey(device, tabkey)).setAction(v.v)
+    print(__get_customactdata(__get_tabkey(device, tabkey)).getAction())
 
 def multiple_tablet_key_get_custom_action(params):
     device = params[0]

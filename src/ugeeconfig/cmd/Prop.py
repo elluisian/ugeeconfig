@@ -518,7 +518,7 @@ class Prop(Node):
 
 
 
-from .propops import *
+from .PropOperations import *
 
 
 
