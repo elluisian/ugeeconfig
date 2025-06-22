@@ -2,7 +2,7 @@ from .ValueTokenizer import *
 from .ValueExceptions import *
 
 from ...data.Action import *
-from ...utils.utils import str_equals_insensitive
+from ...utils.utils import str_equals_insensitive, printf
 from ...utils.Stack import *
 
 
@@ -19,6 +19,9 @@ TG_KEY = "tg_key" # Possible key that appear in keys() command (identifier, t an
 TG_NUMERIC = "tg_numeric" # both float and integer
 TG_ACTID = "tg_actid" # identifer and/or integer
 TG_STRING = "tg_string" # identifier and garbage
+
+
+DEBUG_PARSING = False
 
 
 ER = -1
@@ -174,10 +177,10 @@ class ValueParser(object):
             currNT = st.pop()
 
             if captureToken:
-                print("Capturing new token...")
+                ValueParser.__printf("Capturing new token...")
                 currT = self.tokz.nextToken()
                 currType = currT.getTokenType()
-                print(currT)
+                ValueParser.__printf(currT)
                 while currType == TOKEN_SPACE:
                     currT = self.tokz.nextToken()
                     currType = currT.getTokenType()
@@ -186,8 +189,8 @@ class ValueParser(object):
 
 
             if ValueParser.isNT(currNT):
-                print("At the top of the stack NT \"%s\" was found" % (currNT,))
-                print("Current token: " + str(currT))
+                ValueParser.__printf("At the top of the stack NT \"%s\" was found" % (currNT,))
+                ValueParser.__printf("Current token: " + str(currT))
                 prodNo = ValueParser.getProdNo(currNT, currType)
                 if prodNo == ER:
                     raise ValueParserException("Syntax error: unexpected token \"%s\"" % (currType,))
@@ -195,27 +198,27 @@ class ValueParser(object):
                 prod = ValueParser.PRODUCTIONS_TABLE[prodNo]
                 prodNT = prod[0]
                 prodEls = prod[1:]
-                print("Chosen production %d (%s->%s)" % (prodNo, prodNT, prodEls,))
+                ValueParser.__printf("Chosen production %d (%s->%s)" % (prodNo, prodNT, prodEls,))
                 if len(prodEls) == 0:
                     print("Empty production")
 
                 for i in tuple(reversed(prodEls)):
                     if ValueParser.isTokenGroup(i):
-                        print("Adding token group %s to stack" % (i,))
+                        ValueParser.__printf("Adding token group %s to stack" % (i,))
                     else:
-                        print("Adding token %s to stack" % (i,))
+                        ValueParser.__printf("Adding token %s to stack" % (i,))
                     st.push(i)
 
             elif ValueParser.isTokenGroup(currNT):
-                print("At the top of the stack token group \"%s\" was found (pushing into it again)" % (currType,))
+                ValueParser.__printf("At the top of the stack token group \"%s\" was found (pushing into it again)" % (currType,))
                 if not ValueParser.isValidTokenForTokenGroup(currT, currNT):
                     raise ValueParserException("Syntax error: expected element valid for token group \"%s\" but \"%s\" was found!" % (currNT, currType,))
 
                 st.push(currType)
 
             elif currNT == currType:
-                print("At the top of the stack token \"%s\" was found" % (currType,))
-                print("Top of the stack and current token concide... collecting token...")
+                ValueParser.__printf("At the top of the stack token \"%s\" was found" % (currType,))
+                ValueParser.__printf("Top of the stack and current token concide... collecting token...")
                 if not ValueParser.isTokenToIgnore(currType):
                     toks.append(currT)
                 captureToken = True
@@ -254,3 +257,12 @@ class ValueParser(object):
     @staticmethod
     def __isIntegerTokType(tokType):
         return tokType in (TOKEN_DECIMAL_INTEGER, TOKEN_BINARY_INTEGER, TOKEN_OCTAL_INTEGER, TOKEN_HEXADECIMAL_INTEGER,)
+
+
+
+    @staticmethod
+    def __printf(message, newline=True):
+        if DEBUG_PARSING:
+            printf(message)
+            if newline:
+                printf("\n")

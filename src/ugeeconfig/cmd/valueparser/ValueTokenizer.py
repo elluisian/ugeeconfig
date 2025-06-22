@@ -2,17 +2,6 @@ from ...utils.lexer.CommonTokenReaders import *
 from ...utils.lexer.NumericTokReader import *
 from ...utils.lexer.Tokenizer import *
 
-"""
-KEYS(ctrl+alt+p,ctrl+test+t) # TYPE 1
-MOUSE(ctrl+leftclick,alt+rightclick) # TYPE 2
-FUNCT(<name>) # TYPE 3
-EXEC(name, path) # TYPE 5
-SYSOP(<name>) # TYPE 6
-MULTIM(<name>) # TYPE 7
-NOP() # TYPE 10
-UNSET() # remove what was set
-"""
-
 
 # Data types
 TOKEN_TRUE = "tk_true"
