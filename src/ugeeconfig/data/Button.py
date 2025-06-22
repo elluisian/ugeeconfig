@@ -13,6 +13,10 @@ class Actionable(ABC):
     def getCustomActionData(self):
         return self.actionData
 
+    @abstractmethod
+    def __deepcopy__(self, m):
+        pass
+
 
 class ActionableButton(Actionable):
     def __init__(self, tagNo, actid):
@@ -25,10 +29,18 @@ class ActionableButton(Actionable):
     def setActid(self, actid):
         self.actid = actid
 
+    @abstractmethod
+    def __deepcopy__(self, m):
+        pass
+
 
 class ActionableWheelMovement(Actionable):
     def __init__(self, tagNo):
         super().__init__(tagNo, WheelCustomActionData())
+
+    @abstractmethod
+    def __deepcopy__(self, m):
+        pass
 
 
 
@@ -36,6 +48,12 @@ class ActionableWheelMovement(Actionable):
 class VirtualKey(ActionableButton):
     def __init__(self, tagno, actid):
         super().__init__(tagno, actid)
+
+    def __deepcopy__(self, m):
+        return VirtualKey(self.tagNo, self.actid)
+
+
+
 
 class TabletButton(ActionableButton):
     def __init__(self, tagno, actid, motid=None, show=True):
@@ -49,10 +67,25 @@ class TabletButton(ActionableButton):
     def getShow(self):
         return self.show
 
+    def __deepcopy__(self, m):
+        return TabletButton(self.tagNo, self.actid, self.motid, self.show)
+
+
+
+
 class PenButton(ActionableButton):
     def __init__(self, tagno, actid):
         super().__init__(tagno, actid)
 
+    def __deepcopy__(self, m):
+        return PenButton(self.tagNo, self.actid)
+
+
+
+
 class WheelActMovement(ActionableWheelMovement):
     def __init__(self, tagno):
         super().__init__(tagno)
+
+    def __deepcopy__(self, m):
+        return WheelActMovement(self.tagNo)

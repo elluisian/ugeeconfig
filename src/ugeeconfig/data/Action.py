@@ -20,9 +20,6 @@ ACTION_TYPE_NOT_SET = 11
 
 
 
-
-
-
 # Actids
 ACTID_DRV_PENERSR = 1
 ACTID_DRV_MOUSEK = 2
@@ -105,7 +102,7 @@ ACTID_KEYSTRK_F5 = 324
 ACTID_KEYSTRK_CLBRK = 325
 ACTID_KEYSTRK_OPBRK = 326
 ACTID_KEYSTRK_CTRLCLBRK = 327
-ACTID_KEYSTRK_CTRLOPBRKN = 328
+ACTID_KEYSTRK_CTRLOPBRK = 328 #ACTID_KEYSTRK_CTRLOPBRKN = 328
 ACTID_KEYSTRK_TYPE = "actid_keystrk"
 ACTID_KEYSTRK_VALUES = (
     ACTID_KEYSTRK_B,
@@ -135,7 +132,7 @@ ACTID_KEYSTRK_VALUES = (
     ACTID_KEYSTRK_CLBRK,
     ACTID_KEYSTRK_OPBRK,
     ACTID_KEYSTRK_CTRLCLBRK,
-    ACTID_KEYSTRK_CTRLOPBRKN,
+    ACTID_KEYSTRK_CTRLOPBRK,
 )
 
 
@@ -198,22 +195,6 @@ ACTID_MULTIM_VALUES = (
     ACTID_MULTIM_MUTE,
 )
 
-
-
-def mouseActidValidation(actid):
-    return ACTID_MOUSEK_SHIFT <= actid <= ACTID_MOUSEK_SCRDOWN
-
-def keystrokeActidValidation(actid):
-    return ACTID_KEYSTRK_B <= actid <= ACTID_KEYSTRK_CTRLOPBRKN
-
-def functActidValidation(actid):
-    return ACTID_FUNCT_DISPIFACE <= actid <= ACTID_FUNCT_DESKKEYS
-
-def sysopActidValidation(actid):
-    return ACTID_SYSOP_LOCKSCR <= actid <= ACTID_SYSOP_STARTMENU
-
-def multimActidValidation(actid):
-    return ACTID_MULTIM_PREV <= actid <= ACTID_MULTIM_MUTE
 
 
 
@@ -290,6 +271,15 @@ class CustomActionData(object):
         return self.actType
 
 
+    def __deepcopy__(self, m):
+        inst = CustomActionData()
+        inst.actType = self.actType
+        inst.label = self.label
+        inst.enabled = self.enabled
+        inst.action = self.action
+        return inst
+
+
 
 class WheelCustomActionData(object):
     USAGE_DEFAULT = "usg_default"
@@ -356,25 +346,51 @@ class WheelCustomActionData(object):
         return self.ccwaction is not None
 
 
+    def __deepcopy__(self, m):
+        inst = WheelCustomActionData()
+        inst.label = self.label
+        inst.usage = self.usage
+        inst.cwlabel = self.cwlabel
+        inst.ccwlabel = self.ccwlabel
+        inst.cwaction = self.cwaction
+        inst.ccwaction = self.ccwaction
+        return inst
+
+
 
 
 class CustomAction(ABC):
     def __init__(self):
         pass
 
+    @abstractmethod
+    def __deepcopy__(self, m):
+        pass
+
+
 
 class UnsetCAction(CustomAction):
     INSTANCE = None
     def __init__(self):
         super().__init__()
+
+    def __deepcopy__(self, m):
+        return self
+
 UnsetCAction.INSTANCE = UnsetCAction()
+
 
 
 class NopCAction(CustomAction):
     INSTANCE = None
     def __init__(self):
         super().__init__()
+
+    def __deepcopy__(self, m):
+        return self
+
 NopCAction.INSTANCE = NopCAction()
+
 
 
 
@@ -416,6 +432,11 @@ class SingleKey(object):
     def __str__(self):
         return "%s:%s:%s" % (self.getKeysym(), self.getKeycode(), self.getKeyname(),)
 
+    def __deepcopy__(self, m):
+        keysym = self.keysym
+        keycode = self.keycode
+        return SingleKey(keysym, keycode)
+
 
 
 class Keystroke(object):
@@ -439,6 +460,12 @@ class Keystroke(object):
     def __str__(self):
         return str(self.keys)
 
+    def __deepcopy__(self, m):
+        inst = Keystroke()
+        inst.keys = list(map(lambda x : deepcopy(x), self.keys))
+        inst.keysNo = len(inst.keys)
+        return inst
+
 
 
 class KeysAction(CustomAction):
@@ -458,6 +485,9 @@ class KeysAction(CustomAction):
     def getKeystrokes(self):
         return list(self.keystrokeLs)
 
+    def __deepcopy__(self, m):
+        return KeysAction(list(map(lambda x : deepcopy(x), self.getKeystrokes())))
+
 
 
 
@@ -466,13 +496,11 @@ class SingleActid(object):
         self.actid = actid
         self.actidname = getActIdFromValue(actid)
 
-
     def getActid(self):
         return self.actid
 
     def getActidName(self):
         return self.actidname
-
 
     @staticmethod
     def fromActid(actid, validGroup, groupType):
@@ -490,6 +518,9 @@ class SingleActid(object):
                 actiddata[1], actiddata[0], groupType,
             )
         raise ActionException(excpMessage)
+
+    def __deepcopy__(self, m):
+        return SingleActid(self.getActid())
 
 
 
@@ -510,6 +541,10 @@ class MouseAction(CustomAction):
     def getMKeys(self):
         return list(self.mkeys)
 
+    def __deepcopy__(self, m):
+        mkeys = list(map(lambda x : deepcopy(x), self.getMKeys()))
+        return MouseAction(mkeys)
+
 
 
 
@@ -520,6 +555,9 @@ class ExecAction(CustomAction):
     def getPath(self):
         return self.fpath
 
+    def __deepcopy__(self, m):
+        return ExecAction(self.fpath)
+
 
 
 class ActidCustomAction(CustomAction):
@@ -529,18 +567,35 @@ class ActidCustomAction(CustomAction):
     def getActidData(self):
         return self.singleactidinst
 
+    @abstractmethod
+    def __deepcopy__(self, m):
+        pass
+
+
 
 class FunctionAction(ActidCustomAction):
     def __init__(self, singleactidinst):
         super().__init__(singleactidinst)
 
+    def __deepcopy__(self, m):
+        return FunctionAction(self.singleactidinst)
+
+
 class SysopAction(ActidCustomAction):
     def __init__(self, singleactidinst):
         super().__init__(singleactidinst)
 
+    def __deepcopy__(self, m):
+        return SysopAction(self.singleactidinst)
+
+
 class MultimediaAction(ActidCustomAction):
     def __init__(self, singleactidinst):
         super().__init__(singleactidinst)
+
+    def __deepcopy__(self, m):
+        return MultimediaAction(self.singleactidinst)
+
 
 
 

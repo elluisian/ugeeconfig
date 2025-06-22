@@ -33,3 +33,14 @@ class PressurePoints(object):
     @staticmethod
     def default():
         return PressurePoints.fromValues(0, 0.5, 0.5, 1)
+
+
+    def __str__(self):
+        return "press(%d, %d:%d, %d)" % (self.p0, self.p1.x, self.p1.y, self.p2)
+
+    def __repr__(self):
+        return self.__str__()
+
+
+    def __deepcopy__(self, m):
+        return PressurePoints(self.p0, Point(self.p1.x, self.p1.y), self.p2)

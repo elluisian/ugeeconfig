@@ -1,3 +1,6 @@
+from copy import deepcopy
+
+
 class Ring(object):
     def __init__(self, tag_name, selected_wheel, mode=None, wheel_actmovements=[]):
         self.tag_name = tag_name
@@ -24,3 +27,8 @@ class Ring(object):
             whmov.append(i.tagNo)
 
         return whmov
+
+
+
+    def __deepcopy__(self, m):
+        return Ring(self.tag_name, self.selected_wheel, self.mode, list(map(lambda x : deepcopy(x), self.getWheelActMovements())))

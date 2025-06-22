@@ -1,3 +1,4 @@
+from copy import deepcopy
 from ..utils.Object import *
 
 
@@ -69,3 +70,7 @@ class AppSettings(object):
                 break
 
         return ring
+
+
+    def __deepcopy__(self, m):
+        return AppSettings(deepcopy(self.pressurepoints), self.tablepc, self.relativecoords.asDict(), tuple(map(lambda x : deepcopy(x), self.penbtns)), tuple(map(lambda x : deepcopy(x), self.tabletbtns)), tuple(map(lambda x : deepcopy(x), self.rings)))

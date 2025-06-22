@@ -43,7 +43,7 @@ class Device(object):
             apps = (
                 App(
                     appid = AppId(id = 0, name = 0),
-                    appsettings = appsettings
+                    appsettings = deepcopy(appsettings)
                 ),
             )
         )
@@ -57,8 +57,12 @@ class Device(object):
         return self.commonapp
 
 
+    """
+    This part is a WIP, as it tries to consider the possibility of adding "custom apps", while not supported on Linux...
+    This part was not correctly studied, app with id = 0 and name = 0 is considered to be the default config and it is used to get the default settings for new apps.
+    """
     def getApp(self, idx):
-        if 0 <= idx < self.appsSz:
+        if 1 <= idx < self.appsSz:
             return self.apps[idx]
 
         return None
@@ -67,7 +71,7 @@ class Device(object):
     def addApp(self, appid, appname, apppath):
         app = App(
             AppId(appid, appname, apppath),
-            deepcopy(self.getCommonApp().getSettings())
+            deepcopy(self.apps[0].getSettings())
         )
 
         self.apps.append(app)
@@ -77,6 +81,8 @@ class Device(object):
     def removeApp(self, appInst):
         try:
             idx = self.apps.index(appInst)
+            if idx == 0:
+                return
             del self.apps[idx]
         except ValueError:
             pass
