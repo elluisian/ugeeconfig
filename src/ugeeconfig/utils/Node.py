@@ -42,15 +42,16 @@ class Node(object):
         while not stk.isEmpty():
             el = stk.pop()
 
-            print("ENCOUNTERED: " + str(el))
+            #print("ENCOUNTERED: " + str(el))
 
             if el.hasChildren():
-                print("HAS CHILDREN, DESCENDING")
+                #print("HAS CHILDREN, DESCENDING")
                 children = reversed(el.getChildren())
                 for i in children:
                     stk.push(i)
             else:
-                print("HAS NO CHILDREN, ASCENDING")
+                #print("HAS NO CHILDREN, ASCENDING")
+                pass
 
             available.append((el, el.getParent(),))
 

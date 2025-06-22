@@ -137,7 +137,7 @@ class NumericTokReader(TokenReader):
 
 
     def isValidCharacter(self, ch):
-        print("I AM AT: " + str(self.state) + " with ch: " + ch)
+        #print("I AM AT: " + str(self.state) + " with ch: " + ch)
 
         cell = NumericTokReader.getCell(ch)
         if cell is None:
