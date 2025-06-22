@@ -5,3 +5,6 @@ class Rectangle(Point):
         super().__init__(x, y)
         self.w = w
         self.h = h
+
+    def __deepcopy__(self, m):
+        return Rectangle(self.x, self.y, self.w, self.h)
