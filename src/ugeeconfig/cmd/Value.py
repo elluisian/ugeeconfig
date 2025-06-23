@@ -202,7 +202,11 @@ class Value(object):
                 firstTime = False
 
             if currType in (TOKEN_IDENTIFIER, TOKEN_GARBAGE, TOKEN_TRUE, TOKEN_FALSE,):
-                keystrkInst.addKey(SingleKey.fromKeyName(currT.getTokenValue()))
+                value = currT.getTokenValue()
+                singleKey = SingleKey.fromKeyName(value)
+                if singleKey is None:
+                    raise ValueUnsupportedXKeysymException("Error: Xkeysym \"%s\" is not supported" % (value,))
+                keystrkInst.addKey(singleKey)
 
             elif currType == TOKEN_ARG_SEP:
                 keystrkInst = Keystroke()
