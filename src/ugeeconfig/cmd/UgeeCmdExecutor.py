@@ -44,6 +44,9 @@ class UgeeCmdExecutor(object):
         elif self.operation.xkeysyms > 0:
             self.__handleXKeysyms()
 
+        # Special operation to simply generate the default config file
+        elif self.operation.fromP.count == 0 and self.operation.toP.count > 0:
+            self.__handleTo()
 
 
     def __handleFrom(self):
@@ -109,7 +112,7 @@ class UgeeCmdExecutor(object):
                 v = None
                 try:
                     v = Value(currV)
-                except ActionException as ex:
+                except (ValueParserException, ValueUnsupportedXKeysymException, ActionException) as ex:
                     raise UgeeCmdExecutorException(ex)
                 vType = v.getType()
 
@@ -127,7 +130,7 @@ class UgeeCmdExecutor(object):
                 path = currP.getPropPath()
 
                 setter(params, v)
-                self.__printf(formatter(path, currV, True))
+                self.__printf(formatter(path, v.v, True))
 
 
 

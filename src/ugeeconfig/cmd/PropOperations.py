@@ -2,9 +2,8 @@ import math
 
 from .Prop import *
 from ..data.Action import getActIdFromValue
-
-
-
+from ..data.ScreenMapping import *
+from ..data.TabletPannel import *
 
 
 
@@ -61,11 +60,20 @@ def __get_customactdata(entity):
 
 
 def generic_formatter(path, val, isSet=False):
-    valStr = "N/A"
-
     if isinstance(val, bool):
         valStr = "true" if val else "false"
-    elif val is not None:
+
+    #elif isinstance(val, int) or isinstance(val, str) or\
+    #    isinstance(val, ScreenMapping) or isinstance(val, TabletPannel):
+    #    valStr = str(val)
+
+    elif isinstance(val, Rectangle):
+        valStr = "%dx%d+%d+%d" % (val.w, val.h, val.x, val.y,)
+
+    elif val is None:
+        valStr = "N/A"
+
+    else:
         valStr = str(val)
 
 
@@ -379,7 +387,6 @@ def multiple_tablet_key_set_custom_action(params, v):
     device = params[0]
     tabkey = multiget_tablet_keys_extract(params[1])
     __get_customactdata(__get_tabkey(device, tabkey)).setAction(v.v)
-    print(__get_customactdata(__get_tabkey(device, tabkey)).getAction())
 
 def multiple_tablet_key_get_custom_action(params):
     device = params[0]
