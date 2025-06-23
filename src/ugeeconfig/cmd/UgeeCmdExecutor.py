@@ -5,7 +5,17 @@ from .UgeeCmdExceptions import *
 from .UgeeCmdParser import *
 from .Prop import *
 
-from ..utils.utils import printf, str_startswith_insensitive
+from ..utils.utils import printf, str_startswith_insensitive, str_equals_insensitive
+
+
+
+PARPAR_DRV = "drv"
+PARPAR_KEYS = "keys"
+PARPAR_MOUSE = "mouse"
+PARPAR_FUNCT = "funct"
+PARPAR_SYSOP = "sysop"
+PARPAR_MULTIMEDIA = "multimedia"
+PARPAR_ALL = "all"
 
 
 
@@ -28,6 +38,11 @@ class UgeeCmdExecutor(object):
         elif self.operation.doc > 0:
             self.__handleDoc()
 
+        elif self.operation.actids > 0:
+            self.__handleActids()
+
+        elif self.operation.xkeysyms > 0:
+            self.__handleXKeysyms()
 
 
 
@@ -91,7 +106,11 @@ class UgeeCmdExecutor(object):
 
             else:
                 pType = currP.getValueType()
-                v = Value(currV)
+                v = None
+                try:
+                    v = Value(currV)
+                except ActionException as ex:
+                    raise UgeeCmdExecutorException(ex)
                 vType = v.getType()
 
                 compatibleType = True
@@ -336,3 +355,91 @@ class UgeeCmdExecutor(object):
 
     def __printf(self, message):
         printf(message + "\n", self.operation.toP.count == 0)
+
+
+
+
+    def __handleActids(self):
+        operands = []
+
+        n = len(self.operation.props)
+        if n == 0:
+            self.operation.props = [PARPAR_ALL,]
+
+        actids = getAvailableActIds()
+        actSz = len(actids[0])
+        values = self.__detectActidsFromParameters(actids)
+
+        for i in values:
+            idx = actids[1].index(i)
+            actid = actids[0][idx]
+            operands.append("%s (%d)" % (actid, i,))
+
+
+        print("Here follows the actids:")
+        print()
+        for i in operands:
+            print(i)
+
+
+
+    def __detectActidsFromParameters(self, actids):
+        allWasFound = False
+        includedValues = []
+        values = []
+
+        currPar = None
+        currActidGrp = None
+
+
+        for i in self.operation.props:
+            if str_equals_insensitive(i, PARPAR_ALL):
+                currPar = PARPAR_ALL
+
+            elif str_equals_insensitive(i, PARPAR_DRV):
+                currPar = ACTID_DRV_TYPE
+                currActidGrp = [ACTID_DRV_NOP,]
+
+            elif str_equals_insensitive(i, PARPAR_KEYS):
+                currPar = ACTID_KEYSTRK_TYPE
+                currActidGrp = ACTID_KEYSTRK_VALUES
+
+            elif str_equals_insensitive(i, PARPAR_MOUSE):
+                currPar = ACTID_MOUSEK_TYPE
+                currActidGrp = ACTID_MOUSEK_TYPE
+
+            elif str_equals_insensitive(i, PARPAR_FUNCT):
+                currPar = ACTID_FUNCT_TYPE
+                currActidGrp = ACTID_FUNCT_VALUES
+
+            elif str_equals_insensitive(i, PARPAR_SYSOP):
+                currPar = ACTID_SYSOP_TYPE
+                currActidGrp = ACTID_SYSOP_VALUES
+
+            elif str_equals_insensitive(i, PARPAR_MULTIMEDIA):
+                currPar = ACTID_MULTIM_TYPE
+                currActidGrp = ACTID_MULTIM_VALUES
+
+            else:
+                raise UgeeCmdExecutorException("Error: operand \"%s\" is not valid for operator \"actids\"" % (i,))
+
+
+            if not allWasFound:
+                if currPar == PARPAR_ALL:
+                    values = list(actids[1])
+                    allWasFound = True
+
+                elif currPar not in includedValues:
+                    includedValues.append(currPar)
+                    values.extend(currActidGrp)
+
+        return values
+
+
+
+
+    def __handleXKeysyms(self):
+        print("Here follows the available X Keysyms:")
+        print()
+        for i in Xlib.XK.get_available_augmented_keynames():
+            print(i)

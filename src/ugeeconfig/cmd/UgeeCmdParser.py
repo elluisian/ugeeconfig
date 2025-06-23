@@ -3,6 +3,9 @@ PARSCMD_TO = "to"
 PARSOP_SET = "set"
 PARSOP_GET = "get"
 PARSOP_DOC = "doc"
+PARSOP_ACTIDS = "actids"
+PARSOP_XKEYSYMS = "xkeysyms"
+
 
 
 import os
@@ -33,10 +36,15 @@ class UgeeCmdParser(object):
     def getHelp():
         return """ugeeconfig [from <filepath>] [(get|doc) <prop>+]
 ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
+ugeeconfig actids (keys|mouse|funct|sysop|multimedia|all)*
+ugeeconfig xkeysyms
 
-- if "from" is empty, then it generates a new file starting from the default configs;
-- if "to" is empty, then everything is outputted to stdout, otherwise to file;
-- Use the "doc" operation for getting more documentation on the single props;"""
+- if "from" is omitted, then the default configuration will be used as base;
+- if "to" is omitted, then everything is outputted to stdout, otherwise to file;
+- Use the "doc" operation to get more documentation on single props;
+- Use the "actids" operation to get a list of the available actids;
+- Use the "xkeysyms" operation to show all the XKeysyms names;
+"""
 
 
 
@@ -57,6 +65,8 @@ ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
         operation.set = 0
         operation.get = 0
         operation.doc = 0
+        operation.actids = 0
+        operation.xkeysyms = 0
 
 
         return operation
@@ -66,10 +76,6 @@ ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
 
     def parse(self):
         operation = UgeeCmdParser.__createOperationObject()
-
-        if self.argc == 0:
-            UgeeCmdParser.showHelp()
-
 
         eoiReached = False
         while not eoiReached:
@@ -92,9 +98,9 @@ ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
         UgeeCmdParser.__handleErrorsOfMultipleUsages(operation)
 
 
-        # Show minimal help, if no operation is requested
-        if (operation.set == 0 and operation.get == 0 and operation.doc == 0):
-            UgeeCmdParser.showMinimalHelp()
+        # Show help, if no operation is requested
+        if operation.set == 0 and operation.get == 0 and operation.doc == 0 and operation.actids == 0 and operation.xkeysyms == 0:
+            UgeeCmdParser.showHelp()
 
 
         return operation
@@ -130,7 +136,7 @@ ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
 
     @staticmethod
     def isOperator(token):
-        return token in (PARSOP_SET, PARSOP_GET, PARSOP_DOC,)
+        return token in (PARSOP_SET, PARSOP_GET, PARSOP_DOC, PARSOP_ACTIDS, PARSOP_XKEYSYMS)
 
 
 
@@ -180,7 +186,17 @@ ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
             elif token == PARSOP_DOC:
                 operation.doc += 1
 
+            elif token == PARSOP_ACTIDS:
+                operation.actids += 1
+
+            elif token == PARSOP_XKEYSYMS:
+                operation.xkeysyms += 1
+
             operation.props = list(operands)
+
+            if len(operation.props) > 0 and token == PARSOP_XKEYSYMS:
+                raise UgeeCmdParserException("Error: %s operator doesn't expect operands!" % (PARSOP_XKEYSYMS,))
+
 
         return eoiReached
 
@@ -220,6 +236,12 @@ ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
         if operation.doc > 1:
             raise UgeeCmdParserException("Error: multiple uses of the \"%s\" operator!" % (PARSOP_DOC,))
 
+        if operation.actids > 1:
+            raise UgeeCmdParserException("Error: multiple uses of the \"%s\" operator!" % (PARSOP_ACTIDS,))
+
+        if operation.xkeysyms > 1:
+            raise UgeeCmdParserException("Error: multiple uses of the \"%s\" operator!" % (PARSOP_XKEYSYMS,))
+
 
         # Multiple usages of commands
         if operation.fromP.count > 1:
@@ -238,6 +260,12 @@ ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
             requestedOps += 1
 
         if operation.doc > 0:
+            requestedOps += 1
+
+        if operation.actids > 0:
+            requestedOps += 1
+
+        if operation.xkeysyms > 0:
             requestedOps += 1
 
         if requestedOps > 1:
