@@ -504,14 +504,17 @@ class SingleActid(object):
 
     @staticmethod
     def fromActid(actid, validGroup, groupType):
+        isStr = isinstance(actid, str)
+
         actiddata = getActIdFromValue(actid)
+
         if actiddata is not None:
             if actiddata[1] in validGroup:
                 return SingleActid(actiddata[1])
 
         if actiddata is None:
-            excpMessage = "Error during single actid creation, integer \"%d\" is not a valid actid for group \"%s\"!" % (
-                actid, groupType,
+            excpMessage = "Error during single actid creation, %s \"%s\" is not a valid actid for group \"%s\"!" % (
+                "string" if isStr else "integer", str(actid), str(groupType),
             )
         else:
             excpMessage = "Error during single actid creation, actid \"%d (%s)\" is not a valid actid for group \"%s\"!" % (
@@ -612,7 +615,7 @@ def getAvailableActIds():
                     continue
 
             # Exclude the group of values
-            if filtered.endswith("_VALUES"):
+            if filtered.endswith("_VALUES") or filtered.endswith("_TYPE"):
                 continue
 
             actid_mnem.append(filtered)
@@ -632,8 +635,6 @@ def getActIdFromValue(val):
     szLs = len(actiddata[0])
 
     for idx in range(0, szLs):
-        #print(actiddata[0][idx])
-        #print(actiddata[1][idx])
         if isStr and str_equals_insensitive(val, actiddata[0][idx]):
             toRet = (actiddata[0][idx], actiddata[1][idx])
             break

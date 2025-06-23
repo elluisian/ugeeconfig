@@ -15,10 +15,8 @@ from .utils import str_equals_insensitive
 # This was almost blatantly copied from pykey.
 # For some keysyms, it would be nice to have "friendlier" names, I guess.
 Xlib.XK.Custom_XK_mapping = {
-     ' ' : "space",
-    '\t' : "Tab",
-    '\n' : "Return",  # For some reason this needs to be CR, not LF
-    '\r' : "Return",
+    'Newline' : "Return",  # For some reason this needs to be CR, not LF
+    'Carriage' : "Return",
      '!' : "exclam",
      '#' : "numbersign",
      '%' : "percent",
