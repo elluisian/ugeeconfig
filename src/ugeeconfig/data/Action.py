@@ -226,7 +226,7 @@ class CustomActionData(object):
         return self.actType
 
     def getLabel(self):
-        return "" if self.label is None else self.label
+        return self.label
 
     def setLabel(self, label):
         self.label = label
@@ -281,15 +281,14 @@ class CustomActionData(object):
 
 
 
+WHEEL_USG_DEFAULT = "usg_default"
+WHEEL_USG_CUSTOM = "usg_custom"
+WHEEL_USG_NOP = "usg_nop"
+
 class WheelCustomActionData(object):
-    USAGE_DEFAULT = "usg_default"
-    USAGE_CUSTOM = "usg_custom"
-    USAGE_NOP = "usg_nop"
-
-
     def __init__(self):
         self.label = None
-        self.usage = WheelCustomActionData.USAGE_DEFAULT
+        self.usage = WHEEL_USG_DEFAULT
         self.cwlabel = None
         self.ccwlabel = None
         self.cwaction = None

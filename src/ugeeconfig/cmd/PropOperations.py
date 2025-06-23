@@ -61,10 +61,18 @@ def __get_customactdata(entity):
 
 
 def generic_formatter(path, val, isSet=False):
+    valStr = "N/A"
+
+    if isinstance(val, bool):
+        valStr = "true" if val else "false"
+    elif val is not None:
+        valStr = str(val)
+
+
     if isSet:
-        return "%s = %s" % (path, val,)
+        return "%s = %s" % (path, valStr,)
     else:
-        return "%s: %s" % (path, val,)
+        return "%s: %s" % (path, valStr,)
 
 
 
@@ -465,6 +473,8 @@ def multiple_ring_wheelmov_set_usage(params, v):
     device = params[0]
     ringName = params[1]
     wheelbtn = multiget_ring_wheel_movements_extract(params[2])
+    if v.v != WHEEL_USG_DEFAULT and v.v != WHEEL_USG_CUSTOM and v.v != WHEEL_USG_NOP:
+        v.v = WHEEL_USG_DEFAULT
     __get_customactdata(__get_wheelactmov(device, ringName, wheelbtn)).setUsage(v.v)
 
 def multiple_ring_wheelmov_get_usage(params):

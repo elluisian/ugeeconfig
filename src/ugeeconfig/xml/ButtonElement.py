@@ -150,7 +150,14 @@ class WheelActMovementElement(XMLElement):
         whelActData = wheelactmov.getCustomActionData()
 
         elem = XMLElement.handleTagWithParent("W" + int_to_xmint(wheelactmov.getTagNo()), parent)
-        #elem.attrib["id"] = "2" #bool_to_xmbool(actionDefined) TOFIX
+        usage = whelActData.getUsage()
+        if usage == WHEEL_USG_DEFAULT:
+            usage = 0
+        elif usage == WHEEL_USG_NOP:
+            usage = 1
+        elif usage == WHEEL_USG_CUSTOM:
+            usage = 2
+        elem.attrib["id"] = int_to_xmint(usage)
 
         actElement = ActionElement(whelActData)
         actElement.writeToElement(None, elem) # data is useless in this case, everything is done thanks to whelActData
@@ -168,8 +175,18 @@ class WheelActMovementElement(XMLElement):
 
         whelInst = WheelActMovement(tagNo)
         whelActData = whelInst.getCustomActionData()
-        idAttrib = 2 #xmbool_to_bool(elem.attrib["id"]) TOFIX
-        whelActData.setUsage(idAttrib)
+
+        usage = xmint_to_int(elem.attrib["id"])
+        if usage not in range(0, 3):
+            usage = WHEEL_USG_DEFAULT
+        elif usage == 0:
+            usage = WHEEL_USG_DEFAULT
+        elif usage == 1:
+            usage = WHEEL_USG_NOP
+        elif usage == 2:
+            usage = WHEEL_USG_CUSTOM
+
+        whelActData.setUsage(usage)
 
         actElement = ActionElement(whelActData)
         actElement.readFromElement(elem, version) # Again, not useful to assign, everything is done within whelActData

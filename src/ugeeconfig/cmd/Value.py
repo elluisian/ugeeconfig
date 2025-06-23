@@ -13,6 +13,7 @@ PTYPE_RECTANGLE = "rectangle"
 PTYPE_PRESSURE = "pressure"
 PTYPE_DEFAULT_ACTION = "default_action"
 PTYPE_CUSTOM_ACTION = "custom_action"
+PTYPE_WHEEL_USAGE = "wheel_usage"
 PTYPE_STRING = "string"
 
 

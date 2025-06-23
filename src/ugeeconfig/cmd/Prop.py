@@ -294,37 +294,6 @@ class Prop(Node):
 
 
     @staticmethod
-    def searchPropByPath2(proppath):
-        compnames = proppath.split(".")
-
-        i = len(compnames) - 1
-        while i >= 0:
-            if compnames[i] == "":
-                del compnames[i]
-            i -= 1
-
-        latest = Prop.HIERARCHY
-        nonExistentTerritory = False
-        nonExistents = []
-
-        for i in compnames:
-            #print(i)
-            if not nonExistentTerritory:
-                child = latest.getChildByNameInsensitive(i)
-                if child is not None:
-                    latest = child
-                else:
-                    nonExistents.append(i)
-                    nonExistentTerritory = True
-            else:
-                nonExistents.append(i)
-
-        return (latest, nonExistents,)
-
-
-
-
-    @staticmethod
     def __genDebugPrint(message, newline=True):
         if DEBUG_GENERATION:
             if not isinstance(message, str):
@@ -528,10 +497,10 @@ from .PropOperations import *
 def generateGrammar():
     Prop.HIERARCHY_GRAMMAR = Prop.makeRootNode()
     Prop.HIERARCHY_GRAMMAR.addMultiGroups(
-        (DEVICE_PROP_NAME, "Specific device", multiget_devices, multiget_devices_expected) #multiget_devices, multiget_devices_expected)
+        (DEVICE_PROP_NAME, "Device data", multiget_devices, multiget_devices_expected) #multiget_devices, multiget_devices_expected)
     )
     Prop.HIERARCHY_GRAMMAR.addSingleGroups(
-        (DESKKEYS_PROP_NAME, "Desk keys settings",)
+        (DESKKEYS_PROP_NAME, "Deskkeys data",)
     )
 
 
@@ -542,78 +511,78 @@ def generateGrammar():
     ###########################################
     # DEVICE.(pen|tablet|settings)
     DEVICE_PROP.addSingleGroups(
-        ("pen", "The pen instrument"),
-        ("tablet", "The tablet instrument"),
-        ("settings", "The settings instrument"),
+        ("pen", "Pen data"),
+        ("tablet", "Tablet data"),
+        ("settings", "Settings data"),
     )
 
 
     ###########################################
     # DEVICE.pen.(pressure|mousemode)
     DEVICE_PROP.pen.addSingleGroups(
-        ("pressure", "The pen instrument"),
-        ("mousemode", "The mousemode instrument"),
+        ("pressure", "Pen pressure data"),
+        ("relmode", "Pen's relative mode data"),
     )
 
 
     ###########################################
     # DEVICE.pen.tilt
     DEVICE_PROP.pen.addLeaves(
-        ("tilt", "Is tilt detection enabled?", PTYPE_BOOLEAN, set_pentilt, get_pentilt, generic_formatter),
+        ("tilt", "Enable/Disable tilt detection", PTYPE_BOOLEAN, set_pentilt, get_pentilt, generic_formatter),
     )
 
 
     ###########################################
     # DEVICE.pen.(button<NUM>)
     DEVICE_PROP.pen.addMultiGroups(
-        ("button", "Particular button", multiget_pen_buttons, multiget_pen_buttons_expected),
+        ("button", "Single Pen button data", multiget_pen_buttons, multiget_pen_buttons_expected),
     )
 
 
     ###########################################
     # DEVICE.pen.pressure.(enabled|coords)
     DEVICE_PROP.pen.pressure.addLeaves(
-        ("enabled", "Is pressure enabled?", PTYPE_BOOLEAN, set_penpressure, get_penpressure, generic_formatter),
-        ("coords", "The three points used to detect pressure", PTYPE_PRESSURE, set_penpressure_points, get_penpressure_points, generic_formatter),
+        ("enabled", "Enable/Disable pen pressure", PTYPE_BOOLEAN, set_penpressure, get_penpressure, generic_formatter),
+        ("coords", "Pressure points", PTYPE_PRESSURE, set_penpressure_points, get_penpressure_points, generic_formatter),
     )
 
 
     ###########################################
-    # DEVICE.pen.mousemode.(enabled|speed)
-    DEVICE_PROP.pen.mousemode.addLeaves(
-        ("enabled", "Is relative mode enabled?", PTYPE_BOOLEAN, set_mousemode, get_mousemode, generic_formatter),
-        ("speed", "Relative mode's speed (0 to 10)", PTYPE_INTEGER, set_mousemode_speed, get_mousemode_speed, generic_formatter),
+    # DEVICE.pen.relative.(enabled|speed)
+    DEVICE_PROP.pen.relmode.addLeaves(
+        ("enabled", "Enable/Disable relative mode", PTYPE_BOOLEAN, set_mousemode, get_mousemode, generic_formatter),
+        ("speed", "Relative mode's speed (1 to 10)", PTYPE_INTEGER, set_mousemode_speed, get_mousemode_speed, generic_formatter),
     )
 
 
     ###########################################
     # DEVICE.pen.button<NUM>.(action_default)
     DEVICE_PROP.pen.button.addLeaves(
-         ("action_default", "The default action (actid) for the button", PTYPE_DEFAULT_ACTION, multiple_pen_button_set_default_action, multiple_pen_button_get_default_action, actid_formatter),
+         ("action_default", "Default action for the pen button", PTYPE_DEFAULT_ACTION, multiple_pen_button_set_default_action, multiple_pen_button_get_default_action, actid_formatter),
     )
 
 
     ###########################################
     # DEVICE.pen.button<NUM>.(action_custom)
     DEVICE_PROP.pen.button.addSingleGroups(
-        ("action_custom", "The custom action for the button",),
+        ("action_custom", "Custom action data for the pen button",),
     )
 
 
     ###########################################
     # DEVICE.pen.button<NUM>.action_custom.(enabled|label|action)
     DEVICE_PROP.pen.button.action_custom.addLeaves(
-        ("enabled", "Toggle to enable the use of the custom action", PTYPE_BOOLEAN, multiple_pen_button_set_custom_action_enabled, multiple_pen_button_get_custom_action_enabled, generic_formatter),
-        ("label", "The label for the action", PTYPE_STRING, multiple_pen_button_set_custom_action_label, multiple_pen_button_get_custom_action_label, generic_formatter),
-        ("action", "The actual custom action", PTYPE_CUSTOM_ACTION, multiple_pen_button_set_custom_action, multiple_pen_button_get_custom_action, generic_formatter),
+        ("enabled", "Enable/Disable the usage of the custom action", PTYPE_BOOLEAN, multiple_pen_button_set_custom_action_enabled, multiple_pen_button_get_custom_action_enabled, generic_formatter),
+        ("label", "Label for the custom action", PTYPE_STRING, multiple_pen_button_set_custom_action_label, multiple_pen_button_get_custom_action_label, generic_formatter),
+        ("action", "Action itself", PTYPE_CUSTOM_ACTION, multiple_pen_button_set_custom_action, multiple_pen_button_get_custom_action, generic_formatter),
     )
 
 
     ###########################################
     # DEVICE.tablet.(key|ring)
     DEVICE_PROP.tablet.addMultiGroups(
-        ("key", "Settings related to the single tablet key", multiget_tablet_keys, multiget_tablet_keys_expected),
-        ("ring", "Settings related to the single ring", multiget_tablet_rings, multiget_tablet_rings_expected)
+        ("key", "Single tablet key data", multiget_tablet_keys, multiget_tablet_keys_expected),
+        ("ring", "Single tablet ring data", multiget_tablet_rings, multiget_tablet_rings_expected)
     )
 
 
@@ -622,93 +591,93 @@ def generateGrammar():
     DEVICE_PROP.tablet.addLeaves(
         ("screenres", "Rectangle representing the screen resolution", PTYPE_RECTANGLE, set_screenres, get_screenres, generic_formatter),
         ("tabletres", "Rectangle representing the tablet resolution", PTYPE_RECTANGLE, set_tabletres, get_tabletres, generic_formatter),
-        ("tabletrot", "Settings related to the rotation of the tablet screen", PTYPE_INTEGER, set_tabletrot, get_tabletrot, generic_formatter),
+        ("tabletrot", "Rotation of the tablet screen (0, 90, 180 or 270)", PTYPE_INTEGER, set_tabletrot, get_tabletrot, generic_formatter),
     )
 
 
     ###########################################
     # DEVICE.tablet.key<NUM>.(action_default|action_custom)
     DEVICE_PROP.tablet.key.addLeaves(
-        ("action_default", "The default action (actid) for the key", PTYPE_DEFAULT_ACTION, multiple_tablet_key_set_default_action, multiple_tablet_key_get_default_action, actid_formatter),
+        ("action_default", "Default action for the tablet key", PTYPE_DEFAULT_ACTION, multiple_tablet_key_set_default_action, multiple_tablet_key_get_default_action, actid_formatter),
     )
 
 
     ###########################################
     # DEVICE.tablet.key<NUM>.(action_custom)
     DEVICE_PROP.tablet.key.addSingleGroups(
-        ("action_custom", "The custom action for the key",),
+        ("action_custom", "Custom action data for the tablet key",),
     )
 
 
     ###########################################
     # DEVICE.tablet.key<NUM>.action_custom.(enabled|label|action)
     DEVICE_PROP.tablet.key.action_custom.addLeaves(
-        ("enabled", "Toggle to enable the use of the custom action", PTYPE_BOOLEAN, multiple_tablet_key_set_custom_action_enabled, multiple_tablet_key_get_custom_action_enabled, generic_formatter),
-        ("label", "The label for the action", PTYPE_STRING, multiple_tablet_key_set_custom_action_label, multiple_tablet_key_get_custom_action_label, generic_formatter),
-        ("action", "The actual custom action", PTYPE_CUSTOM_ACTION, multiple_tablet_key_set_custom_action, multiple_tablet_key_get_custom_action, generic_formatter),
+        ("enabled", "Enable/Disable the usage of the custom action", PTYPE_BOOLEAN, multiple_tablet_key_set_custom_action_enabled, multiple_tablet_key_get_custom_action_enabled, generic_formatter),
+        ("label",  "Label for the custom action", PTYPE_STRING, multiple_tablet_key_set_custom_action_label, multiple_tablet_key_get_custom_action_label, generic_formatter),
+        ("action", "Action itself", PTYPE_CUSTOM_ACTION, multiple_tablet_key_set_custom_action, multiple_tablet_key_get_custom_action, generic_formatter),
     )
 
 
     ###########################################
     # DEVICE.tablet.<RINGNAME>.(wheel_movement<NUM>)
     DEVICE_PROP.tablet.ring.addMultiGroups(
-        ("wheel_movement", "Particular wheel movement", multiget_ring_wheel_movements, multiget_ring_wheel_movements_expected,),
+        ("wheel_movement", "Wheel action movement data", multiget_ring_wheel_movements, multiget_ring_wheel_movements_expected,),
     )
 
 
     ###########################################
     # DEVICE.tablet.<RINGNAME>.wheel_movement<NUM>.(usage|label|cw_label|ccw_label|ccw_action|cw_action)
     DEVICE_PROP.tablet.ring.wheel_movement.addLeaves(
-        ("usage", "Toggle for enabling/defaulting/disabling the custom movement", PTYPE_INTEGER, multiple_ring_wheelmov_set_usage, multiple_ring_wheelmov_get_usage, generic_formatter),
-        ("label", "The \"generic\" label for the action", PTYPE_STRING, multiple_ring_wheelmov_set_label, multiple_ring_wheelmov_get_label, generic_formatter),
-        ("ccw_label", "The counter clockwise action's label", PTYPE_STRING, multiple_ring_wheelmov_set_custom_ccwaction_label, multiple_ring_wheelmov_get_custom_ccwaction_label, generic_formatter),
-        ("cw_label", "The clockwise action's label", PTYPE_STRING, multiple_ring_wheelmov_set_custom_cwaction_label, multiple_ring_wheelmov_get_custom_cwaction_label, generic_formatter),
-        ("ccw_action", "The counterclockwise action for the wheel", PTYPE_CUSTOM_ACTION, multiple_ring_wheelmov_set_custom_ccwaction, multiple_ring_wheelmov_get_custom_ccwaction, generic_formatter),
-        ("cw_action", "The clockwise action for the wheel", PTYPE_CUSTOM_ACTION, multiple_ring_wheelmov_set_custom_cwaction, multiple_ring_wheelmov_get_custom_cwaction, generic_formatter),
+        ("usage", "Setting to determine the \"usage\" of the wheel movement", PTYPE_WHEEL_USAGE, multiple_ring_wheelmov_set_usage, multiple_ring_wheelmov_get_usage, generic_formatter),
+        ("label", "The \"generic\" label for the wheel movement", PTYPE_STRING, multiple_ring_wheelmov_set_label, multiple_ring_wheelmov_get_label, generic_formatter),
+        ("ccw_label", "The counterclockwise custom action's label", PTYPE_STRING, multiple_ring_wheelmov_set_custom_ccwaction_label, multiple_ring_wheelmov_get_custom_ccwaction_label, generic_formatter),
+        ("cw_label", "The clockwise custom action's label", PTYPE_STRING, multiple_ring_wheelmov_set_custom_cwaction_label, multiple_ring_wheelmov_get_custom_cwaction_label, generic_formatter),
+        ("ccw_action", "The counterclockwise custom action itself", PTYPE_CUSTOM_ACTION, multiple_ring_wheelmov_set_custom_ccwaction, multiple_ring_wheelmov_get_custom_ccwaction, generic_formatter),
+        ("cw_action", "The clockwise custom action itself", PTYPE_CUSTOM_ACTION, multiple_ring_wheelmov_set_custom_cwaction, multiple_ring_wheelmov_get_custom_cwaction, generic_formatter),
     )
 
 
     ###########################################
     # DEVICE.settings.(messages|tabletkeys)
     DEVICE_PROP.settings.addLeaves(
-        ("messages", "Toggle for showing messages", PTYPE_BOOLEAN, set_showmessages, get_showmessages, generic_formatter),
-        ("tabletkeys", "Toggle for enabling/disabling tablet keys input", PTYPE_BOOLEAN, set_tabletkeys, get_tabletkeys, generic_formatter),
+        ("messages", "Show/Hide messages", PTYPE_BOOLEAN, set_showmessages, get_showmessages, generic_formatter),
+        ("tabletkeys", "Enable/Disable tablet keys input", PTYPE_BOOLEAN, set_tabletkeys, get_tabletkeys, generic_formatter),
     )
 
 
     ###########################################
     # DESKKEYS.(fixed|zoom|nokeys)
     DESKKEYS_PROP.addLeaves(
-        ("fixed", "Toggle for fixed/movable desk keys window", PTYPE_BOOLEAN, set_deskkeys_fixed, get_deskkeys_fixed, generic_formatter),
-        ("zoom", "Desk keys window zoom", PTYPE_FLOAT, set_deskkeys_zoom, get_deskkeys_zoom, generic_formatter),
-        ("nokeys", "Number of keys to use", PTYPE_INTEGER, set_deskkeys_nokeys, get_deskkeys_nokeys, generic_formatter)
+        ("fixed", "Fixed/movable deskkeys", PTYPE_BOOLEAN, set_deskkeys_fixed, get_deskkeys_fixed, generic_formatter),
+        ("zoom", "Deskkeys window zoom value", PTYPE_FLOAT, set_deskkeys_zoom, get_deskkeys_zoom, generic_formatter),
+        ("nokeys", "Number of virtual keys", PTYPE_INTEGER, set_deskkeys_nokeys, get_deskkeys_nokeys, generic_formatter)
     )
 
 
     ###########################################
     # DESKKEYS.(vkey<NUM>)
     DESKKEYS_PROP.addMultiGroups(
-        ("vkey", "Particular (virtual) desk key", multiget_deskkeys_vkeys, multiget_deskkeys_vkeys_expected,)
+        ("vkey", "Virtual desk key data", multiget_deskkeys_vkeys, multiget_deskkeys_vkeys_expected,)
     )
 
     ###########################################
     # DESKKEYS.(vkey<NUM>).(action_default|action_custom)
     DESKKEYS_PROP.vkey.addLeaves(
-        ("action_default", "The default action (actid) for the button", PTYPE_DEFAULT_ACTION, multiple_deskkeys_vkeys_set_default_action, multiple_deskkeys_vkeys_get_default_action, actid_formatter),
+        ("action_default", "Default action for the virtual key", PTYPE_DEFAULT_ACTION, multiple_deskkeys_vkeys_set_default_action, multiple_deskkeys_vkeys_get_default_action, actid_formatter),
     )
 
     ###########################################
     # DESKKEYS_PROP.vkey<NUM>.(action_custom)
     DESKKEYS_PROP.vkey.addSingleGroups(
-        ("action_custom", "The custom action for the virtual key",),
+        ("action_custom", "Custom action data for the deskkey",),
     )
 
     ###########################################
     # DESKKEYS_PROP.vkey<NUM>.action_custom.(action|name)
     DESKKEYS_PROP.vkey.action_custom.addLeaves(
-        ("enabled", "Toggle to enable the use of the custom action", PTYPE_BOOLEAN, multiple_deskkeys_vkeys_set_custom_action_enabled, multiple_deskkeys_vkeys_get_custom_action_enabled, generic_formatter),
-        ("label", "The label for the action", PTYPE_STRING, multiple_deskkeys_vkeys_set_custom_action_label, multiple_deskkeys_vkeys_get_custom_action_label, generic_formatter),
-        ("action", "The actual custom action", PTYPE_CUSTOM_ACTION, multiple_deskkeys_vkeys_set_custom_action, multiple_deskkeys_vkeys_get_custom_action, generic_formatter),
+        ("enabled", "Enable/Disable the usage of the custom action", PTYPE_BOOLEAN, multiple_deskkeys_vkeys_set_custom_action_enabled, multiple_deskkeys_vkeys_get_custom_action_enabled, generic_formatter),
+        ("label", "Label for the custom action", PTYPE_STRING, multiple_deskkeys_vkeys_set_custom_action_label, multiple_deskkeys_vkeys_get_custom_action_label, generic_formatter),
+        ("action", "Action itself", PTYPE_CUSTOM_ACTION, multiple_deskkeys_vkeys_set_custom_action, multiple_deskkeys_vkeys_get_custom_action, generic_formatter),
     )
 
 

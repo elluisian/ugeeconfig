@@ -225,11 +225,11 @@ class ActionElement(XMLElement):
 
                 element = "%d|%s|%s|%s|%s|%s" % (actType, genLabel, ccwLabel, cwLabel, ccwKeystrokes, cwKeystrokes)
 
-                if usage == WheelCustomActionData.USAGE_DEFAULT:
+                if usage == WHEEL_USG_DEFAULT:
                     usage = 0
-                elif usage == WheelCustomActionData.USAGE_DEFAULT:
+                elif usage == WHEEL_USG_NOP:
                     usage = 1
-                elif usage == WheelCustomActionData.USAGE_NOP:
+                elif usage == WHEEL_USG_CUSTOM:
                     usage = 2
 
                 parent.attrib["id"] = str(usage)
