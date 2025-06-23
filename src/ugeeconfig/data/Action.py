@@ -457,7 +457,7 @@ class Keystroke(object):
         return self.keysNo
 
     def __str__(self):
-        return str(self.keys)
+        return " + ".join(list(map(lambda x : x.getKeyname(), self.keys)))
 
     def __deepcopy__(self, m):
         inst = Keystroke()
@@ -487,6 +487,8 @@ class KeysAction(CustomAction):
     def __deepcopy__(self, m):
         return KeysAction(list(map(lambda x : deepcopy(x), self.getKeystrokes())))
 
+    def __str__(self):
+        return ", ".join(list(map(lambda x : str(x), self.keystrokeLs)))
 
 
 
@@ -524,6 +526,9 @@ class SingleActid(object):
     def __deepcopy__(self, m):
         return SingleActid(self.getActid())
 
+    def __str__(self):
+        return self.actidname
+
 
 
 class MouseAction(CustomAction):
@@ -547,6 +552,9 @@ class MouseAction(CustomAction):
         mkeys = list(map(lambda x : deepcopy(x), self.getMKeys()))
         return MouseAction(mkeys)
 
+    def __str__(self):
+        return " + ".join(list(map(lambda x : str(x), self.mkeys)))
+
 
 
 
@@ -559,6 +567,9 @@ class ExecAction(CustomAction):
 
     def __deepcopy__(self, m):
         return ExecAction(self.fpath)
+
+    def __str__(self):
+        return "exec(\"%s\")" % (self.fpath,)
 
 
 
@@ -582,6 +593,9 @@ class FunctionAction(ActidCustomAction):
     def __deepcopy__(self, m):
         return FunctionAction(self.singleactidinst)
 
+    def __str__(self):
+        return "funct(%s)" % (str(self.singleactidinst),)
+
 
 class SysopAction(ActidCustomAction):
     def __init__(self, singleactidinst):
@@ -589,6 +603,9 @@ class SysopAction(ActidCustomAction):
 
     def __deepcopy__(self, m):
         return SysopAction(self.singleactidinst)
+
+    def __str__(self):
+        return "sysop(%s)" % (str(self.singleactidinst),)
 
 
 class MultimediaAction(ActidCustomAction):
@@ -598,6 +615,8 @@ class MultimediaAction(ActidCustomAction):
     def __deepcopy__(self, m):
         return MultimediaAction(self.singleactidinst)
 
+    def __str__(self):
+        return "multim(%s)" % (str(self.singleactidinst),)
 
 
 

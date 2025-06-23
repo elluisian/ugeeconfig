@@ -19,4 +19,5 @@ class ScreenMapping(Rectangle):
 
 
     def __str__(self):
-        return "%dx%d+%d+%d,sel=%d" % (self.w, self.h, self.x, self.y, self.selected_option,)
+        return "%dx%d+%d+%d" % (self.w, self.h, self.x, self.y,)
+        #return "%dx%d+%d+%d,sel=%d" % (self.w, self.h, self.x, self.y, self.selected_option,)
