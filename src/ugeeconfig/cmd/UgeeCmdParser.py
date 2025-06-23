@@ -34,7 +34,7 @@ class UgeeCmdParser(object):
 
     @staticmethod
     def getHelp():
-        return """ugeeconfig [from <filepath>] [(get|doc) <prop>+]
+        return """ugeeconfig [from <filepath>] [(get|doc) <prop>*]
 ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
 ugeeconfig actids (keys|mouse|funct|sysop|multimedia|all)*
 ugeeconfig xkeysyms
@@ -44,6 +44,24 @@ ugeeconfig xkeysyms
 - Use the "doc" operation to get more documentation on single props;
 - Use the "actids" operation to get a list of the available actids;
 - Use the "xkeysyms" operation to show all the XKeysyms names;
+
+- <filepath>: a simple file path;
+- <prop>: is a dot-separated path, use the 'doc' operator to know the available ones;
+- <value>: may be:
+    - a string;
+    - an integer;
+    - a float of the form "(digit)*.(digit)+";
+    - a rectangle of the form "rect(x, y, w, h)", with "x", "y", "w", and "h" being integers;
+    - a "pressurepoints" of the form "press(p0, p1x, p1y, p2)", with "p0" and "p2" being integers, representing, respectively, the x-axes of the first and final points of the pressure, while "p1x" and "p1y" are an xy-coordinate for the middle point;
+    - an actid (integer and/or symbolic actid name);
+    - a wheel usage (symbolic name), with the values "usg_default", "usg_custom", "usg_nop";
+    - a custom action with one of the following forms:
+        - "keys(<keystroke>[,<keystroke>]*)" where <keystroke> is of the form (<keysym>[+<keysym>]*), basically, a bunch of lists of keysyms separated by pluses, separated by commas;
+        - "mouse(<mouseactid>[+<mouseactid>]*)" where <mouseactid> is a mouse actid;
+        - "exec(<execpath>)" where <execpath> is a path to an executable to be run (command line parameters are not supported)
+        - "funct(<functactid>)" where <functactid> is a function actid;
+        - "sysop(<sysopactid>)" where <sysopactid> is a sysop actid;
+        - "multim(<multimactid>)" where <multimactid> is a multimedia actid;
 """
 
 

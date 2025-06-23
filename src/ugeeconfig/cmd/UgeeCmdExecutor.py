@@ -116,14 +116,18 @@ class UgeeCmdExecutor(object):
                 compatibleType = True
                 if pType == PTYPE_DEFAULT_ACTION:
                     compatibleType = (vType == PTYPE_INTEGER or vType == PTYPE_STRING)
+                elif pType == PTYPE_WHEEL_USAGE:
+                    compatibleType = (vType == PTYPE_STRING)
                 else:
                     compatibleType = (vType == pType)
 
                 if not compatibleType:
                     raise UgeeCmdExecutorIncompatibleValueTypeException("%s: \"%s\" is an incompatible type for value, \"%s\" type expected" % (currP, currV, pType,))
 
+                path = currP.getPropPath()
+
                 setter(params, v)
-                self.__printf(formatter(currP, currV, True))
+                self.__printf(formatter(path, currV, True))
 
 
 
@@ -196,7 +200,11 @@ class UgeeCmdExecutor(object):
 
             path = p.getPropPath()
             description = p.getDescription()
-            self.__printf("%s: %s" % (path, description,))
+            valueType = p.getValueType()
+            if valueType is None:
+                self.__printf("%s: %s" % (path, description,))
+            else:
+                self.__printf("%s: %s [%s]" % (path, description, valueType.upper()))
 
 
 
