@@ -13,6 +13,7 @@ import sys
 
 
 from ..utils.Object import *
+from ..utils.utils import str_equals_insensitive
 from .UgeeCmdExceptions import *
 
 
@@ -20,7 +21,7 @@ from .UgeeCmdExceptions import *
 
 class UgeeCmdParser(object):
     def __init__(self):
-        self.args = list(map(lambda x : x.lower(), sys.argv[1:]))
+        self.args = list(sys.argv[1:])
         self.argc = len(self.args)
         self.idx = 0
 
@@ -36,14 +37,20 @@ class UgeeCmdParser(object):
     def getHelp():
         return """ugeeconfig [from <filepath>] [(get|doc) <prop>*]
 ugeeconfig [from <filepath>] [to <filepath>] set (<prop> <value)+
+ugeeconfig [to <filepath>]
 ugeeconfig actids (keys|mouse|funct|sysop|multimedia|all)*
 ugeeconfig xkeysyms
 
-- if "from" is omitted, then the default configuration will be used as base;
-- if "to" is omitted, then everything is outputted to stdout, otherwise to file;
-- Use the "doc" operation to get more documentation on single props;
+- Use the "get" operator to get prop values;
+- Use the "doc" operator to get more documentation on single props;
+- Use the "set" operator to set prop values;
+- Use the "to" command without any operator to generate a default config file;
 - Use the "actids" operation to get a list of the available actids;
 - Use the "xkeysyms" operation to show all the XKeysyms names;
+- if "from" is omitted, then the default configuration will be used as base;
+- if "to" is omitted, then everything is outputted to stdout, otherwise to file;
+
+
 
 - <filepath>: a simple file path;
 - <prop>: is a dot-separated path, use the 'doc' operator to know the available ones;
@@ -118,7 +125,9 @@ ugeeconfig xkeysyms
 
         # Show help, if no operation is requested
         if operation.set == 0 and operation.get == 0 and operation.doc == 0 and operation.actids == 0 and operation.xkeysyms == 0:
-            UgeeCmdParser.showHelp()
+            if operation.fromP.count != 0 and operation.toP.count == 0:
+                UgeeCmdParser.showHelp()
+            # if no from and a toP is set, then consider this a valid operation, as it's as if the generation of the default config file is requested.
 
 
         return operation
@@ -147,14 +156,19 @@ ugeeconfig xkeysyms
 
     @staticmethod
     def isCommand(token):
-        return token in (PARSCMD_FROM, PARSCMD_TO,)
+        return str_equals_insensitive(token, PARSCMD_FROM) or\
+            str_equals_insensitive(token, PARSCMD_TO)
 
 
 
 
     @staticmethod
     def isOperator(token):
-        return token in (PARSOP_SET, PARSOP_GET, PARSOP_DOC, PARSOP_ACTIDS, PARSOP_XKEYSYMS)
+        return str_equals_insensitive(token, PARSOP_SET) or\
+            str_equals_insensitive(token, PARSOP_GET) or\
+            str_equals_insensitive(token, PARSOP_DOC) or\
+            str_equals_insensitive(token, PARSOP_ACTIDS) or\
+            str_equals_insensitive(token, PARSOP_XKEYSYMS)
 
 
 
