@@ -56,6 +56,7 @@ Xlib.XK.Custom_XK_mapping = {
  "Shift" : "Shift_L",
  "AltGr" : "ISO_Level3_Shift",
    "Alt" : "Alt_L",
+ "Super" : "Super_L",
 }
 Xlib.XK.Augmented_XK_mapping = {
     "keynames": {},

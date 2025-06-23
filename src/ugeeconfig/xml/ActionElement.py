@@ -189,6 +189,7 @@ class ActionElement(XMLElement):
         actInst = data
         actType = self.customActionDataInst.getActionType()
         actLabel = self.customActionDataInst.getLabel()
+        actLabel = "" if actLabel is None else actLabel
 
         element = None
 
