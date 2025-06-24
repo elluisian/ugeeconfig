@@ -125,10 +125,10 @@ ugeeconfig xkeysyms
 
         # Show help, if no operation is requested
         if operation.set == 0 and operation.get == 0 and operation.doc == 0 and operation.actids == 0 and operation.xkeysyms == 0:
-            if operation.fromP.count != 0 and operation.toP.count == 0:
+            if (operation.toP.count == 0 and operation.fromP.count == 0) or\
+                (operation.toP.count > 0 and operation.fromP.count > 0):
                 UgeeCmdParser.showHelp()
-            # if no from and a toP is set, then consider this a valid operation, as it's as if the generation of the default config file is requested.
-
+            # if no fromP and a toP is set, then consider this a valid operation, as it's as if the generation of the default config file is requested.
 
         return operation
 

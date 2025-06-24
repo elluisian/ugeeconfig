@@ -1210,7 +1210,7 @@ def generate_default_config():
     #####################
     # DEVICE "LA1501F" #
     #####################
-    DEVNAME = "LPU1611F"
+    DEVNAME = "LA1501F"
 
     DEVINFO = DeviceInfo(ringnum = 0, keynum = 0, pentype = 11)
 
