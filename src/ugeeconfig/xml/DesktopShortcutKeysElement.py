@@ -55,11 +55,20 @@ class DesktopShortcutKeysElement(XMLElement):
             elif child.tag == "VirtualKey":
                 vkchildren = get_children(child)
 
-                dsk.vkeys = {}
+                vkdata = {}
                 for subch in vkchildren:
                     vke = VirtualKeyElement()
                     vkeyInst = vke.readFromElement(subch)
-                    dsk.vkeys[vkeyInst.tag_no] = vkeyInst
+                    vkdata[vkeyInst.tagNo] = vkeyInst
+
+                vkdataks = list(vkdata.keys())
+                vkdataks.sort()
+                fvkeys = []
+
+                for i in vkdataks:
+                    fvkeys.append(vkdata[i])
+
+                dsk.vkeys = tuple(fvkeys)
 
             else:
                 raise InvalidXMLTag("Tag name \"%s\" is invalid for element \"%s\"" % (child.tag, elem.tag,))

@@ -2,6 +2,7 @@ import re
 import os
 
 
+from ..utils.Object import *
 from ..utils.XMLElement import *
 from ..utils.utils import *
 from ..data.Action import *
@@ -18,7 +19,7 @@ REGEX_ACTION_SINGLE_ACTID_FORMAT = "([0-9]+)|"
 
 class ActionElementException(Exception):
     def __init__(self, message):
-        super.__init__(message)
+        super().__init__(message)
 
 
 
@@ -31,28 +32,29 @@ class ActionElement(XMLElement):
         if elem is None:
             raise InvalidXMLTag("Element is None!")
 
-        dataObj = ActionElement.__parseActionData(elem.text)
+        if elem.text is not None:
+            dataObj = ActionElement.__parseActionData(elem.text)
 
-        if isinstance(self.customActionDataInst, WheelCustomActionData):
-            self.customActionDataInst.setLabel(dataObj.label)
-            self.customActionDataInst.setCWLabel(dataObj.cwlabel)
-            self.customActionDataInst.setCCWLabel(dataObj.ccwlabel)
-            self.customActionDataInst.setCWAction(dataObj.cwActInst)
-            self.customActionDataInst.setCCWAction(dataObj.ccwActInst)
-            return None
+            if isinstance(self.customActionDataInst, WheelCustomActionData):
+                self.customActionDataInst.setLabel(dataObj.label)
+                self.customActionDataInst.setCWLabel(dataObj.cwlabel)
+                self.customActionDataInst.setCCWLabel(dataObj.ccwlabel)
+                self.customActionDataInst.setCWAction(dataObj.cwActInst)
+                self.customActionDataInst.setCCWAction(dataObj.ccwActInst)
 
-        else:
-            actInst = dataObj.actInst
-            self.customActionDataInst.setLabel(dataObj.label)
+            else:
+                actInst = dataObj.actInst
+                self.customActionDataInst.setLabel(dataObj.label)
+                return actInst
 
-        return actInst
+        return None
 
 
 
 
 
     @staticmethod
-    def __parseActionData(contents, actSz):
+    def __parseActionData(contents):
         actionData = str(contents)
         actionData = actionData.split("|")
         actSz = len(actionData)
