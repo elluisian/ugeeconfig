@@ -11,8 +11,10 @@ class DeviceInfoElement(XMLElement):
         XMLElement.append_simple_element("DeviceRingNum", int_to_xmint(deviceinfo.ringnum), elem)
         XMLElement.append_simple_element("DeviceKeyNum", int_to_xmint(deviceinfo.keynum), elem)
         XMLElement.append_simple_element("DevicePenType", int_to_xmint(deviceinfo.pentype), elem)
-        XMLElement.append_simple_element("DeviceTrackPad", int_to_xmint(deviceinfo.trackpad), elem)
-        XMLElement.append_simple_element("DeviceControl", int_to_xmint(deviceinfo.control), elem)
+        if deviceinfo.trackpad is not None:
+            XMLElement.append_simple_element("DeviceTrackPad", int_to_xmint(deviceinfo.trackpad), elem)
+        if deviceinfo.control is not None:
+            XMLElement.append_simple_element("DeviceControl", int_to_xmint(deviceinfo.control), elem)
         if deviceinfo.key_direction is not None:
             XMLElement.append_simple_element("DeviceKeyDirection", int_to_xmint(deviceinfo.key_direction), elem)
 

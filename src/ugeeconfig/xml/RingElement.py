@@ -46,6 +46,6 @@ class RingElement(XMLElement):
         for wchild in wchildren:
             wel = WheelActMovementElement()
             wheelb = wel.readFromElement(wchild, version)
-            wheelactbtns.append(ringb)
+            wheelactbtns.append(wheelb)
 
         return Ring(tag_name, selected_button, mode, wheelactbtns)

@@ -136,7 +136,7 @@ class PenButtonElement(XMLElement):
         pnActData = pnInst.getCustomActionData()
         actElement = ActionElement(pnActData)
         actInst = actElement.readFromElement(elem, version)
-        pnInst.setAction(actInst)
+        pnActData.setAction(actInst)
 
         return pnInst
 
