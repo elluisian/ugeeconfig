@@ -3,19 +3,36 @@ from abc import ABC, abstractmethod
 from .TokenInfo import *
 
 
-
+"""
+This is a token reader, that is, a special detector for a single Token type.
+Some of the common tokens are given as TokenReaders in CommonTokenReaders.py
+"""
 class TokenReader(ABC):
     def __init__(self, inpread):
         self.inpread = inpread
 
+
+    """
+    This method is the one that describes HOW the current token is recognized according ALSO to the current character (ch).
+    For the most part, this is the most difficult method to implement.
+    It must return true if the current character is valid for that input, false otherwise.
+    """
     @abstractmethod
     def isValidCharacter(self, ch):
         pass
 
+
+    """
+    This method is used to return a tokenType, that will be used to make the final token.
+    """
     @abstractmethod
     def getTokenType(self):
         pass
 
+    """
+    This method is used when initializing variables that may become useful when implementing
+    "isValidCharacter".
+    """
     @abstractmethod
     def initForIteration(self):
         pass

@@ -29,6 +29,9 @@ class IdentifierKeywordTokReader(TokenReader):
     def __init__(self, inpread, disruptingAlphabet, tkDescrs=()):
         super().__init__(inpread)
 
+        """
+        The disrupting alphabet is the list of characters that will cause the Identifier TokenReader to stop itself when analyzing identifiers, since they take a broader form, compared to operators for example.
+        """
         self.disruptingAlphabet = disruptingAlphabet
 
         self.keywords = []

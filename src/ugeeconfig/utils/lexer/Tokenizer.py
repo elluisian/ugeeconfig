@@ -5,6 +5,9 @@ from .TokenInfo import *
 from .CommonTokenReaders import GarbageTokReader
 
 
+"""
+As the name suggests, this class uses a set of "TokenReaders", that is, small modules specialized in the detection of a particular Token.
+"""
 class Tokenizer(ABC):
     def __init__(self, inp, disruptingAlphabet):
         self.inpread = InputReader(inp)
