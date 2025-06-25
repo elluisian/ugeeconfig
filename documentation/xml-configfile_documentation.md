@@ -8,16 +8,13 @@ I didn't try the Windows version of the driver, so if things are implemented the
 Please also note that this is just a "trial-and-error documentation", no reverse engineering was performed, as my only goal was to set keystrokes easily, as keyboard events are totally diregarded in the official configuring program, making it hard to set those.
 
 
-## XML Documentation
+Let's start with the root node, which is named _UGEE_ and it includes the following nodes:
 
-The root node is _UGEE_, it includes the nodes:
-
-- __PenTabletLists__: It owns all the devices' definitions. It has a _version_ attribute, presumably used to detect the particular version of this node "whole structure" (how the inner nodes are laid out that is);
-
-- __DesktopShortcutKeys__: It owns all the information related to the "shortcut keys window", the one that may be used above everything else in-software (deskkeys in short from now on).
+- __PenTabletLists__: It owns all the devices' definitions. It has a _version_ attribute, presumably used to detect the particular version of this node's "whole structure" (how the inner nodes are laid out that is);
+- __DesktopShortcutKeys__: It owns all the information related to the "shortcut keys window", the one that may be used above everything else in-software (deskkeys in short from now on);
 
 
-### DesktopShortcutKeys documentation
+## DesktopShortcutKeys documentation
 
 This node owns only a few inner nodes:
 
@@ -28,7 +25,7 @@ This node owns only a few inner nodes:
 - __Columns__: Number of columns available in the deskkeys window. According to the configuring program, the maximum should be 4;
 
 
-### Single device documentation
+## Single device documentation
 
 Each device definition starts with a tag representing its code name, throughout this document, I will refer to the UE16 tablet as an example, as it happens this is the device I personally own.
 
@@ -36,86 +33,84 @@ Basically, for the UE16, the node's tag is "UE16", for other models, it's their 
 
 Every device node contains the following nodes:
 
-- __DeviceInfo__: Its inner nodes describe the features of the particular device:
-    - __DeviceRingNum__: As the name suggests, it is the number of available rings (can be thought as "knobs") on the tablet. The UE16 for example features one of them, it is possible to assign two different actions to it, based on the particular rotation's direction, be it clockwise or counterclockwise;
-    - __DeviceKeyNum__: As the name suggests, it is the number of available physical keys on the tablet;
-    - __DevicePenType__: It is an integer value that supposedly describes the features of the pen used by the tablet. Unfortunately, I can't investigate further as I own only the UE16;
-    - __DeviceTrackpad__: Not sure what this does, perhaps it establishes if the tablet can be treated as a trackpad;
-    - __DeviceControl__: Not sure what this does;
-    - __DeviceKeyDirection__: Only a few devices have this, I'm not sure what's supposed to mean;
+- __DeviceInfo__) Its inner nodes describe the features of the particular device:
+    - __DeviceRingNum__) As the name suggests, it is the number of available rings (can be thought as "knobs") on the tablet. The UE16 for example features one of them, it is possible to assign two different actions to it, based on the particular rotation's direction, be it clockwise or counterclockwise;
+    - __DeviceKeyNum__) As the name suggests, it is the number of available physical keys on the tablet;
+    - __DevicePenType__) It is an integer value that supposedly describes the features of the pen used by the tablet. Unfortunately, I can't investigate further as I own only the UE16;
+    - __DeviceTrackpad__) Not sure what this does, perhaps it establishes if the tablet can be treated as a trackpad;
+    - __DeviceControl__) Not sure what this does;
+    - __DeviceKeyDirection__) Only a few devices have this, I'm not sure what's supposed to mean;
 
-
-- __Common__: Common properties, not related to "apps" (see below)
-    - __ScreenMapping__: It establishes what is the "walkable" area of the screen on the tablet when using the pen. This is used for those tablets that also feature a monitor, such as the UE16. Basically, with this option, it is possible to enlarge or restrict the reachable areas of the screen when using the pen to navigate:
+- __Common__) Common properties, not related to "apps" (see below):
+    - __ScreenMapping__) It establishes what is the "walkable" area of the screen on the tablet when using the pen. This is used for those tablets that also feature a monitor, such as the UE16. Basically, with this option, it is possible to enlarge or restrict the reachable areas of the screen when using the pen to navigate:
         - The _id_ attribute is used to record the dropdown menu choice, when selecting the monitor (0 is the first entry);
         - Nodes __SX__, __SY__, __SW__ and __SH__ simply define, in pixel, the mapping (coordinate 0,0 is on the top-left);
 
 
-    - __TabletPannel__: It establishes what is the usable area on the tablet that may be used to "walk the screen". This is used for those tablets that also feature a monitor, such as the UE16. Basically, with this option, it is possible to determine the precise portion of the tablet screen that must be touched by the pen, in order to perform some kind of movement on the screen;
-            - The _Orientation_ attribute is used to determine the tablet's orientation. 0 is standard, 1 is 90°, 2 is 180° and 3 is 270°;
-            - Nodes __TX__, __TY__, __TW__ and __TH__ simply define, in pixel, the mapping (coordinate 0,0 is on the top-left);
+    - __TabletPannel__) It establishes what is the usable area on the tablet that may be used to "walk the screen". This is used for those tablets that also feature a monitor, such as the UE16. Basically, with this option, it is possible to determine the precise portion of the tablet screen that must be touched by the pen, in order to perform some kind of movement on the screen:
+        - The _Orientation_ attribute is used to determine the tablet's orientation. 0 is standard, 1 is 90°, 2 is 180° and 3 is 270°;
+        - Nodes __TX__, __TY__, __TW__ and __TH__ simply define, in pixel, the mapping (coordinate 0,0 is on the top-left);
+    - __DisableInfo__) Show "messages" when using keys/rotating buttons, and so on (0 to enable, 1 to disable);
+    - __DisableQuickKey__) Contrary to its counterintuitive name, this is used to determine if tablet keys should produce any input or not (0 to enable tablet keys input, 1 to disable);
+    - __DisablePressure__) Detect pen pressure (0 to enable, 1 to disable);
+    - __DisableSlope__) Detect pen tilt (0 to enable, 1 to disable);
+    - __PictureFiles__) I don't know where this is used. I speculate these represent the particular device's images used in the configuring program, I'm not sure though:
+        - __T_0__) A rectangle described by the attributes _X_, _Y_, _W_ and _H_, all integers;
+        - __T_1__) Same as __T_0__;
+        - __T_2__) Same as __T_0__;
+        - __T_3__) Same as __T_0__;
 
-    - __DisableInfo__: Show "messages" when using keys/rotating buttons, and so on (0 to enable, 1 to disable);
-    - __DisableQuickKey__: Contrary to its counterintuitive name, this is used to determine if tablet keys should produce any input or not (0 to enable tablet keys input, 1 to disable);
 
-    - __DisablePressure__: Detect pen pressure (0 to enable, 1 to disable);
-
-    - __DisableSlope__: Detect pen tilt (0 to enable, 1 to disable);
-
-    - __PictureFiles__: I don't know where this is used. I speculate these represent the particular device's images used in the configuring program, I'm not sure though;
-        - __T_0__: A rectangle described by the attributes _X_, _Y_, _W_ and _H_, all integers;
-        - __T_1__: Same as __T_0__;
-        - __T_2__: Same as __T_0__;
-        - __T_3__: Same as __T_0__;
-
-    - __SC__: I don't know what this is supposed to be, not all devices have this;
+    - __SC__) I don't know what this is supposed to be, not all devices have this:
         - attributes _fXY_, _fXLC_, _fYLC_ and _fKX_: if __SC__ is present, all of these are set to 1. I don't know what these are;
 
 
-- __CommonAPP__: Common properties that apply regardless of the particular "app" (see below)
-    - __Pen__: Properties of the pen
-        - __PenBtn\<N\>__: Particular pen button, its "tag number" _\<N\>_ is important, as not all the devices have the same set of tag numbers. Some might even not present any button, in that case, this node is absent.
+- __CommonAPP__) Common properties that apply regardless of the particular "app" (see below):
+    - __Pen__) Properties of the pen:
+        - __PenBtn\<N\>__) Particular pen button, its "tag number" _\<N\>_ is important, as not all the devices have the same set of tag numbers. Some might even not present any button, in that case, this node is absent.
             - The _id_ attribute is used to determine if a custom action is set, 1 if set, 0 if not;
             - The _Actid_ attribute is used to determine the default action of the button, when no custom action is set (also used during the config reset in the configuring program);
             - If a custom action is set, the content is set to the action definition (see Action documentation for details);
-
-        - __P0__, __P1X__, __P1Y__ and __P2__: Respectively, starting point, middle point and ending point, these are used to represent the pressure curve. __P0__ and __P2__ represent the starting and ending X axis (with P0's Y being 0 and P2's Y being 1), the middle point on the other hand, have both X and Y axes;
-
-        - __TablePC__: Not sure what this means, I've seen it's always set to 1;
-
-        - __RelativeCoords__: These are the settings related to "mouse mode":
+        - __P0__, __P1X__, __P1Y__ and __P2__) Respectively, starting point, middle point and ending point, these are used to represent the pressure curve. __P0__ and __P2__ represent the starting and ending X axis (with P0's Y being 0 and P2's Y being 1), the middle point on the other hand, have both X and Y axes;
+        - __TablePC__) Not sure what this means, I've seen it's always set to 1;
+        - __RelativeCoords__) These are the settings related to "mouse mode":
             - The _Speed_ attribute is an integer from 0 to 10, with 5 as its default;
             - The content is set to 0 if disabled, 1 if enabled;
 
-    - __K__: Description of tablet keys's actions
-        - K\<N\>: Particular tablet key, its "tag number" _\<N\>_ is important, as not all the devices have the same set of tag numbers. Some might even not present any key, in that case, this node is absent.
+
+    - __K__) Description of tablet keys's actions:
+        - __K\<N\>__) Particular tablet key, its "tag number" _\<N\>_ is important, as not all the devices have the same set of tag numbers. Some might even not present any key, in that case, this node is absent:
             - The _id_ attribute is used to determine if a custom action is set, 1 if set, 0 if not;
             - The _Actid_ attribute is used to determine the default action of the key, when no custom action is set (also used during the config reset in the configuring program);
             - The _Motid_ attribute is usually set exactly to the tag number of the particular key, this doesn't apply to the "Q6" device for some reason, as the different "motids" are set backwards in respect to the tag number. I honestly don't know what is supposed to mean;
             - The _Show_ attribute may have been used to hide entries, it doesn't appear to work though. If I decide to set Show to 0 on one of the keys, the configuring program doesn't run. Perhaps this was used during debugging? For some odd reason, UE16 has the 9th key, located at the center of the ring, set with Show=0, if it is changed to Show=1, the configuring program does not show up, but the driver works properly.
             - If a custom action is set, the content is set to the action definition (see Action documentation for details);
 
-    - __R__: Description of the first ring of the tablet. If the tablet has no rings, this node is absent. A ring may have multiple "wheel actions" (represented by the __W__ node, see below).
+
+    - __R__) Description of the first ring of the tablet. If the tablet has no rings, this node is absent. A ring may have multiple "wheel actions" (represented by the __W__ node, see below):
         - the _id_ attribute is used to determine what particular "wheel action" is used (0 is the first one);
-        - __W\<N\>__: A single "wheel action", which is basically a pair of actions, one for clockwise movement, the other for counterclockwise movement. Most tablets have up to 4 wheel actions, for some reason though, the LPU1102 has five of them;
+        - __W\<N\>__) A single "wheel action", which is basically a pair of actions, one for clockwise movement, the other for counterclockwise movement. Most tablets have up to 4 wheel actions, for some reason though, the LPU1102 has five of them:
             - The _id_ attribute is used to determine the kind of action that is set. If 0, then the default action is set, if 1 then the wheel action has no effect, if 2, then a custom wheel action is set;
             - If a custom wheel action is set, the content is set to the wheel action definition (see Action documentation for details, in particular "Action Type 4: wheel actions");
             - Please note that, contrary to the tags owning the _actid_ attribute, it seems there is no way to change the default wheel action;
 
-    - __R2__: Description of the second ring of the tablet. If the tablet has no rings or no second ring, this node is absent;
+
+    - __R2__) Description of the second ring of the tablet. If the tablet has no rings or no second ring, this node is absent;
         - the _id_ attribute is the same as __R__'s;
         - the _mode_ attribute is used to determine the "mode"... too bad I don't know what that means;
-        - __W\<N\>__: Same as __R__'s;
-
-    - __TR__: Alternative description of the second ring of the tablet. For some reason, this is used, instead of "R2", only on the LPU1505F device. Apart from that, it's equivalent to __R2__;
+        - __W\<N\>__) Same as __R__'s;
 
 
-- __Apps__: Properties that apply to particular "apps". As reported in "22.3.5 Applications and Others" of the page [https://www.ugee.com/subsidiary/setup-ue16](https://www.ugee.com/subsidiary/setup-ue16), it is possible to add per-app settings, unfortunately, it seems only the windows version of the drivers allows for this.
-    - __app__: A single app;
-        - The _id_ attribute is used for... who knows;
+    - __TR__) Alternative description of the second ring of the tablet. For some reason, this is used, instead of "R2", only on the LPU1505F device. Apart from that, it's equivalent to __R2__;
+
+
+
+- __Apps__) Properties that apply to particular "apps". As reported in "22.3.5 Applications and Others" of the page [https://www.ugee.com/subsidiary/setup-ue16](https://www.ugee.com/subsidiary/setup-ue16), it is possible to add per-app settings, unfortunately, it seems only the windows version of the drivers allows for this.
+    - __app__) A single app. For some reason, the configuring program makes only a single app entry, with _id_ set to 0 and _name_ set to 0... Is this some sort of default entry? Nonetheless, these "apps" are ignored on GNU/Linux, :
+        - The _id_ attribute is used for... well... I don't know;
         - The _name_ attribute is used, I guess, to define a friendly name for the app;
-        - __path__: A supposed path to the executable, I guess;
-        - The rest of tags mimic the ones contained in __CommonAPP__, except that, for some reason, the Ks have only the _id_ attribute;
+        - __path__) A supposed path to an executable, I guess;
+        - The rest of tags mimic the ones contained in __CommonAPP__, except that, for some reason, the __K__ nodes of the "id=0" app entry have no attributes besides _id_;
 
 
 
@@ -128,7 +123,7 @@ I tinkered with the QT5 framework, but I was not capable of finding any way to s
 
 To set actions, there are two main ways:
 
-- Default actions, identified by the _Actid_ attribute. These can be set to __K__ nodes (tablet keys and deskkeys) and __PenBtn\<N\>__ nodes (pen buttons);
+- Default actions, identified by the _Actid_ attribute. These can be set to __K__ nodes (tablet keys and deskkeys) and __PenBtn__ nodes;
 
 - Custom actions, defined in the contents of the particular key/virtual key/button/wheel movement's node;
 
@@ -137,14 +132,14 @@ To set actions, there are two main ways:
 ### Default actions: the Actid attribute
 
 In the context of the configuring program, actids are used to assign action to keys/buttons when no custom action is set. They are also used for resetting the configuration when choosing "restore configuration".
-Theoretically, each keys/buttons/etc has its own particular default actionid and it can't be changed from the configuring program, in practice though, it is possible to force a particular actionid by writing it in the XML config file itself.
+Theoretically, each keys/buttons/etc has its own particular default actionid that is immutable, in practice though, it is possible to force a particular actionid by writing it in the XML config file itself.
 
 Here follows the list of actionids that were found out during the development of ugeeconfig, these should be all, though I'm not sure:
 
 
-Actid |                        Effect |                                                   Notes
-:----:|:-----------------------------:|:------------------------------------------------------:
-      |                               | DRIVER FUNCTS. DESCRIPTIONS (Unusable, except for "10")
+Actid |            Description/Effect |                                            Notes
+:----:|:-----------------------------:|:-----------------------------------------------:
+|     |   DRIVER FUNCTS. DESCRIPTIONS | All unusable except for "10" (No function set)
     1 |                    Pen/Eraser |
     2 |                     Mouse key |
     3 |                     Keystroke |
@@ -152,10 +147,11 @@ Actid |                        Effect |                                         
     5 |               Run application |
     6 |               System function |
     7 |                    Multimedia |
-   10 |                   No function |                                        No function set
+   10 |                   No function |                                No function set
    11 |                     Customize |
    12 |                       Default |
-      |                               |                                 MOUSE KEY COMBINATIONS
+|&nbsp;|                              |
+|     |        MOUSE KEY COMBINATIONS |
   201 |                         Shift |
   202 |                      Left Alt |
   203 |                     Right Alt |
@@ -167,7 +163,8 @@ Actid |                        Effect |                                         
   209 |             Left double click |
   210 |                     Scroll up |
   211 |                   Scroll down |
-      |                               |                                 PREDEFINED KEY STROKES
+|&nbsp;|                              |
+|     |        PREDEFINED KEY STROKES |
   301 |                 Keystroke "B" |
   302 |                 Keystroke "E" |
   303 |               Keystroke "Alt" |
@@ -196,24 +193,27 @@ Actid |                        Effect |                                         
   326 |                 Keystroke "[" |
   327 |            Keystroke "Ctrl+]" |
   328 |            Keystroke "Ctrl+[" |
-      |                               |                                              FUNCTIONS
+|&nbsp;|                              |
+|     |                     FUNCTIONS |
   401 | Display/Hide Driver Interface |
   402 |                Switch monitor |
   403 |                    Pen/Eraser |
   404 |                Precision mode |
   405 |         Switch ring1 function |
-  406 |         Switch ring2 function |               Available only on devices with two rings
-  407 |          Change trackpad mode |                        Not sure what this does exactly
+  406 |         Switch ring2 function |       Available only on devices with two rings
+  407 |          Change trackpad mode |    Not sure what "trackpad" is in this context
   408 |                       [B]/[E] |
   409 |                        Eraser |
   410 |                     Desk keys |
-      |                               |                                      SYSTEM OPERATIONS
-  601 |                   Lock screen |                               Not working on GNU/Linux
+|&nbsp;|                              |
+|     |             SYSTEM OPERATIONS |
+  601 |                   Lock screen |                       Not working on GNU/Linux
   602 |                      Shutdown |
   603 |                     Hibernate |
-  604 |               Show activities |                               Not working on GNU/Linux
-  605 |                  Startup menu |                               Not working on GNU/Linux
-      |                               |       MULTIMEDIA OPERATIONS (Not working on GNU/Linux)
+  604 |               Show activities |                       Not working on GNU/Linux
+  605 |                  Startup menu |                       Not working on GNU/Linux
+|&nbsp;|                              |
+|     |         MULTIMEDIA OPERATIONS |                None of these work on GNU/Linux
   701 |                      Previous |
   702 |                          Next |
   703 |                    Play/Pause |
@@ -222,7 +222,7 @@ Actid |                        Effect |                                         
   706 |                          Mute |
 
 
-Most devices are created with a unique combination of default actid per button, for more details check the "defconfs.py" file, which is responsible for the re-generation of the default XML config file.
+The configuring program makes a default config file with unique actid combinations per button/key etc for every single supported device. For more details check the "DefaultConfigs.py" file, which is responsible for the re-generation of the default XML config file.
 
 
 ### Custom actions: Action type \<N\>
@@ -248,9 +248,9 @@ where:
 
 - `<label>` is a string representing the keystrokes. The configuring program simply sets this to the name of all the entered keystrokes;
 
-- `<keystrokes>` a list of comma-separated `<keystroke>` elements;
+- `<keystrokes>` is a list of comma-separated `<keystroke>` elements;
 
-- A `<keystroke>` is made of one or multiple plus-separated `<key>` elements. A single `<key>` has the format `<keysym>:<keycode>` where `<keysym>` is the X keysym (in decimal) of the `<key>` and `<keycode>` is the keycode (in decimal) of the `<key>`. Both of them can be obtained by using the `xev` utility (remember to convert the keysym to decimal, in `xev` that is given in hexadecimal).
+- A `<keystroke>` is made of one or multiple plus-separated `<key>` elements. A single `<key>` has the format `<keysym>:<keycode>` where `<keysym>` is the X keysym (in decimal) of the `<key>` and `<keycode>` is the keycode (in decimal) of the `<key>`. Both of them can be obtained by using the `xev` utility (remember to convert the keysym to decimal, in `xev` that is given in hexadecimal);
 
 
 Here's an example:
@@ -259,7 +259,7 @@ Here's an example:
 1||Ctrl+Alt+A,Alt+B|65507:37+65513:64+97:38,65513:64+98:56
 ```
 
-Let's see why we get `65507:37+65513:64+97:38` for Ctrl+Alt+A and `65513:64+98:56` for Alt+B.
+Let's see why we get `65507:37+65513:64+97:38` for Ctrl+Alt+A and `65513:64+98:56` for Alt+B.\
 Run `xev` and gather the keys Ctrl, Alt, A and B. Here follows the output from my own system:
 
 ```
@@ -316,7 +316,7 @@ From this output, it can be concluded that:
 
 ### Action Type 2: Mouse key
 
-When the key is pressed, one or more mouse clicks plus some arbitrary control keys are generated. Its format is:
+When the key is pressed, one or more mouse plus some arbitrary control keys events are generated. Its format is:
 
 ```
 2||<label>|<keys>+<click>
@@ -332,7 +332,6 @@ where:
 
 
 Here are two examples:
-
 
 ```
 2||Ctrl+Left click|204+206
@@ -415,8 +414,8 @@ Here below are two examples:
 
 ### Action Type 7: Multimedia functions
 
-This action type's commands simply executes some multimedia actions (play/pause etc..).
-Even if forced, this aaction type does not work on GNU/Linux.
+This action type's commands simply executes some multimedia actions (play/pause etc..).\
+Even when forced, this action type does not work on GNU/Linux.\
 Its format is the following:
 
 
@@ -456,9 +455,10 @@ In reality, the two texts are simple labels, they change according to the langua
 
 Some tablets, like the UE16, have one or more "rings" (they are called "rollers" in the FAQs). These are rotable knobs that if rotated in a certain direction, a certain action is performed.
 
-For each ring, there are up to 4 possible wheel actions, that is, a pair of single actions, one for clockwise movement and the other for counterclockwise movement, moreover, only one of these may be used at a time, but it is possible to cycle over them, with the use of a key.
+For each ring, there are up to 4 possible wheel actions (that's how I decided to call them, poor name, I know), that is, a pair of single actions, one for clockwise movement and the other for counterclockwise movement.\
+A ring can use only one wheel action at a time, but it is possible to cycle over them (with actids 405 and 406).
 
-This action type applies to the __W\<N\>__ element, when it is set, its _id_ attribute is set to 2 and its contents has the following format:
+This action type applies to the __W\<N\>__ element, when it is set, its _id_ attribute is set to 2 and its contents have the following format:
 
 ```
 4|<label>|<ccwlabel>|<cwlabel>|<ccwkstrokes>|<cwkstrokes>
@@ -466,27 +466,27 @@ This action type applies to the __W\<N\>__ element, when it is set, its _id_ att
 
 where:
 
-- `<label>` is supposed to be a label describing the pair of actions. As far as I noticed, the configuring program sets it to "custom";
+- `<label>` is supposed to be a label describing the pair of actions. As far as I noticed, the configuring program sets this to "custom";
 - `<ccwlabel>` is the label for the counterclockwise action. The configuring program sets it based on the entered keys;
 - `<cwlabel>` is the label for the clockwise action. The configuring program sets it based on the entered keys;
-- `<ccwstrokes>` is a `<keystrokes>` element, as defined in in the section "Action Type 1: Keystrokes". This one is used when performing the counterclockwise movement;
-- `<cwstrokes>` is a `<keystrokes>` element, as defined in in the section "Action Type 1: Keystrokes". This one is used when performing the clockwise movement;
+- `<ccwstrokes>` is a `<keystrokes>` element, as defined in the section "Action Type 1: Keystrokes". This one is used when performing the counterclockwise movement;
+- `<cwstrokes>` is a `<keystrokes>` element, as defined in the section "Action Type 1: Keystrokes". This one is used when performing the clockwise movement;
 
 
-As it can be seen, contrary to other type of keys/buttons, the pair of custom actions can only be keystrokes, the same ones already treated in the section "Action Type 1: Keystrokes".
+As already said, contrary to other type of keys/buttons, the pair of custom actions can only be keystrokes, the same ones already treated in the section "Action Type 1: Keystrokes".
 
 In the following example:
 
 ```
-4|Personalizza|A|B|97:38|98:56
+4|Customize|A|B|97:38|98:56
 ```
 
 If a clockwise rotation is performed then the letter "A" will be produced, if a counterclockwise rotation is performed, "B" is produced.
 
-Please note that one of the two rotations may not be set at all, for example, consider the following:
+Please note that it is also possible to define only one of the two available custom action, consider the following:
 
 ```
-4|Personalizza|A||97:38|
+4|Customize|A||97:38|
 ```
 
-In this case, only the clockwise rotation produces an input ("A"), the counterclockwise rotation on the other hand, does not produce anything.
+In this case, only the clockwise rotation produces something ("A").

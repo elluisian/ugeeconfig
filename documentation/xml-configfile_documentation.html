@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="elluisian">
+        <title>Ugee driver xml Configuration file documentation</title>
+        <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+        }
+        ul>li:first-child {
+            margin-top: 10pt;
+        }
+        ul>li:not(first-child), ul>li:not(last-child) {
+            margin-bottom: 10pt;
+        }
+        ul>li:last-child {
+            margin-bottom: 25pt;
+        }
+        </style>
+    </head>
+    <body>
+     <h1
+     id="ugeeconfig.xml-documentation-on-the-gnulinux-platform">UgeeConfig.xml
+     documentation on the GNU/Linux platform</h1>
+     <p>In this document I will describe my findings related to the XML
+     file ugeeTabletDriver uses as its config file for setting pen
+     buttons, tablet keys and so on.</p>
+     <p>Please note that I’m describing the linux version of the config
+     file, as I work under there, to be precise, I work under Debian
+     testing (Trixie, at the time of writing). I didn’t try the Windows
+     version of the driver, so if things are implemented there but not
+     here, I’m not aware, simply put.</p>
+     <p>Please also note that this is just a “trial-and-error
+     documentation”, no reverse engineering was performed, as my only
+     goal was to set keystrokes easily, as keyboard events are totally
+     diregarded in the official configuring program, making it hard to
+     set those.</p>
+     <p>Let’s start with the root node, which is named <em>UGEE</em> and
+     it includes the following nodes:</p>
+     <ul>
+     <li><strong>PenTabletLists</strong>: It owns all the devices’
+     definitions. It has a <em>version</em> attribute, presumably used
+     to detect the particular version of this node’s “whole structure”
+     (how the inner nodes are laid out that is);</li>
+     <li><strong>DesktopShortcutKeys</strong>: It owns all the
+     information related to the “shortcut keys window”, the one that may
+     be used above everything else in-software (deskkeys in short from
+     now on);</li>
+     </ul>
+     <h2 id="desktopshortcutkeys-documentation">DesktopShortcutKeys
+     documentation</h2>
+     <p>This node owns only a few inner nodes:</p>
+     <ul>
+     <li><strong>Fixed</strong>: Will the deskkeys window be fixed or
+     movable? 0 if fixed, 1 if not;</li>
+     <li><strong>Zoom</strong>: The “zoom” feature for the deskkeys (it
+     causes the actions’ icons to be bigger/smaller). Apparently the
+     only supported values are “1”, “1.5” and “2”;</li>
+     <li><strong>DisplayedAtCursor</strong>: I have no idea what this
+     does, perhaps used in some other tablets? If not used at all, it
+     probably would have been used so that the deskkeys window could be
+     shown near the cursor (like a popup menu);</li>
+     <li><strong>Rows</strong>: Number of rows available in the deskkeys
+     window. According to the configuring program, the maximum should be
+     4;</li>
+     <li><strong>Columns</strong>: Number of columns available in the
+     deskkeys window. According to the configuring program, the maximum
+     should be 4;</li>
+     </ul>
+     <h2 id="single-device-documentation">Single device
+     documentation</h2>
+     <p>Each device definition starts with a tag representing its code
+     name, throughout this document, I will refer to the UE16 tablet as
+     an example, as it happens this is the device I personally own.</p>
+     <p>Basically, for the UE16, the node’s tag is “UE16”, for other
+     models, it’s their code name.</p>
+     <p>Every device node contains the following nodes:</p>
+     <ul>
+     <li><strong>DeviceInfo</strong>) Its inner nodes describe the
+     features of the particular device:
+     <ul>
+     <li><strong>DeviceRingNum</strong>) As the name suggests, it is the
+     number of available rings (can be thought as “knobs”) on the
+     tablet. The UE16 for example features one of them, it is possible
+     to assign two different actions to it, based on the particular
+     rotation’s direction, be it clockwise or counterclockwise;</li>
+     <li><strong>DeviceKeyNum</strong>) As the name suggests, it is the
+     number of available physical keys on the tablet;</li>
+     <li><strong>DevicePenType</strong>) It is an integer value that
+     supposedly describes the features of the pen used by the tablet.
+     Unfortunately, I can’t investigate further as I own only the
+     UE16;</li>
+     <li><strong>DeviceTrackpad</strong>) Not sure what this does,
+     perhaps it establishes if the tablet can be treated as a
+     trackpad;</li>
+     <li><strong>DeviceControl</strong>) Not sure what this does;</li>
+     <li><strong>DeviceKeyDirection</strong>) Only a few devices have
+     this, I’m not sure what’s supposed to mean;</li>
+     </ul></li>
+     <li><strong>Common</strong>) Common properties, not related to
+     “apps” (see below):
+     <ul>
+     <li><strong>ScreenMapping</strong>) It establishes what is the
+     “walkable” area of the screen on the tablet when using the pen.
+     This is used for those tablets that also feature a monitor, such as
+     the UE16. Basically, with this option, it is possible to enlarge or
+     restrict the reachable areas of the screen when using the pen to
+     navigate:
+     <ul>
+     <li>The <em>id</em> attribute is used to record the dropdown menu
+     choice, when selecting the monitor (0 is the first entry);</li>
+     <li>Nodes <strong>SX</strong>, <strong>SY</strong>,
+     <strong>SW</strong> and <strong>SH</strong> simply define, in
+     pixel, the mapping (coordinate 0,0 is on the top-left);</li>
+     </ul></li>
+     <li><strong>TabletPannel</strong>) It establishes what is the
+     usable area on the tablet that may be used to “walk the screen”.
+     This is used for those tablets that also feature a monitor, such as
+     the UE16. Basically, with this option, it is possible to determine
+     the precise portion of the tablet screen that must be touched by
+     the pen, in order to perform some kind of movement on the screen:
+     <ul>
+     <li>The <em>Orientation</em> attribute is used to determine the
+     tablet’s orientation. 0 is standard, 1 is 90°, 2 is 180° and 3 is
+     270°;</li>
+     <li>Nodes <strong>TX</strong>, <strong>TY</strong>,
+     <strong>TW</strong> and <strong>TH</strong> simply define, in
+     pixel, the mapping (coordinate 0,0 is on the top-left);</li>
+     </ul></li>
+     <li><strong>DisableInfo</strong>) Show “messages” when using
+     keys/rotating buttons, and so on (0 to enable, 1 to disable);</li>
+     <li><strong>DisableQuickKey</strong>) Contrary to its
+     counterintuitive name, this is used to determine if tablet keys
+     should produce any input or not (0 to enable tablet keys input, 1
+     to disable);</li>
+     <li><strong>DisablePressure</strong>) Detect pen pressure (0 to
+     enable, 1 to disable);</li>
+     <li><strong>DisableSlope</strong>) Detect pen tilt (0 to enable, 1
+     to disable);</li>
+     <li><strong>PictureFiles</strong>) I don’t know where this is used.
+     I speculate these represent the particular device’s images used in
+     the configuring program, I’m not sure though:
+     <ul>
+     <li><strong>T_0</strong>) A rectangle described by the attributes
+     <em>X</em>, <em>Y</em>, <em>W</em> and <em>H</em>, all
+     integers;</li>
+     <li><strong>T_1</strong>) Same as <strong>T_0</strong>;</li>
+     <li><strong>T_2</strong>) Same as <strong>T_0</strong>;</li>
+     <li><strong>T_3</strong>) Same as <strong>T_0</strong>;</li>
+     </ul></li>
+     <li><strong>SC</strong>) I don’t know what this is supposed to be,
+     not all devices have this:
+     <ul>
+     <li>attributes <em>fXY</em>, <em>fXLC</em>, <em>fYLC</em> and
+     <em>fKX</em>: if <strong>SC</strong> is present, all of these are
+     set to 1. I don’t know what these are;</li>
+     </ul></li>
+     </ul></li>
+     <li><strong>CommonAPP</strong>) Common properties that apply
+     regardless of the particular “app” (see below):
+     <ul>
+     <li><strong>Pen</strong>) Properties of the pen:
+     <ul>
+     <li><strong>PenBtn&lt;N&gt;</strong>) Particular pen button, its
+     “tag number” <em>&lt;N&gt;</em> is important, as not all the
+     devices have the same set of tag numbers. Some might even not
+     present any button, in that case, this node is absent.
+     <ul>
+     <li>The <em>id</em> attribute is used to determine if a custom
+     action is set, 1 if set, 0 if not;</li>
+     <li>The <em>Actid</em> attribute is used to determine the default
+     action of the button, when no custom action is set (also used
+     during the config reset in the configuring program);</li>
+     <li>If a custom action is set, the content is set to the action
+     definition (see Action documentation for details);</li>
+     </ul></li>
+     <li><strong>P0</strong>, <strong>P1X</strong>, <strong>P1Y</strong>
+     and <strong>P2</strong>) Respectively, starting point, middle point
+     and ending point, these are used to represent the pressure curve.
+     <strong>P0</strong> and <strong>P2</strong> represent the starting
+     and ending X axis (with P0’s Y being 0 and P2’s Y being 1), the
+     middle point on the other hand, have both X and Y axes;</li>
+     <li><strong>TablePC</strong>) Not sure what this means, I’ve seen
+     it’s always set to 1;</li>
+     <li><strong>RelativeCoords</strong>) These are the settings related
+     to “mouse mode”:
+     <ul>
+     <li>The <em>Speed</em> attribute is an integer from 0 to 10, with 5
+     as its default;</li>
+     <li>The content is set to 0 if disabled, 1 if enabled;</li>
+     </ul></li>
+     </ul></li>
+     <li><strong>K</strong>) Description of tablet keys’s actions:
+     <ul>
+     <li><strong>K&lt;N&gt;</strong>) Particular tablet key, its “tag
+     number” <em>&lt;N&gt;</em> is important, as not all the devices
+     have the same set of tag numbers. Some might even not present any
+     key, in that case, this node is absent:
+     <ul>
+     <li>The <em>id</em> attribute is used to determine if a custom
+     action is set, 1 if set, 0 if not;</li>
+     <li>The <em>Actid</em> attribute is used to determine the default
+     action of the key, when no custom action is set (also used during
+     the config reset in the configuring program);</li>
+     <li>The <em>Motid</em> attribute is usually set exactly to the tag
+     number of the particular key, this doesn’t apply to the “Q6” device
+     for some reason, as the different “motids” are set backwards in
+     respect to the tag number. I honestly don’t know what is supposed
+     to mean;</li>
+     <li>The <em>Show</em> attribute may have been used to hide entries,
+     it doesn’t appear to work though. If I decide to set Show to 0 on
+     one of the keys, the configuring program doesn’t run. Perhaps this
+     was used during debugging? For some odd reason, UE16 has the 9th
+     key, located at the center of the ring, set with Show=0, if it is
+     changed to Show=1, the configuring program does not show up, but
+     the driver works properly.</li>
+     <li>If a custom action is set, the content is set to the action
+     definition (see Action documentation for details);</li>
+     </ul></li>
+     </ul></li>
+     <li><strong>R</strong>) Description of the first ring of the
+     tablet. If the tablet has no rings, this node is absent. A ring may
+     have multiple “wheel actions” (represented by the
+     <strong>W</strong> node, see below):
+     <ul>
+     <li>the <em>id</em> attribute is used to determine what particular
+     “wheel action” is used (0 is the first one);</li>
+     <li><strong>W&lt;N&gt;</strong>) A single “wheel action”, which is
+     basically a pair of actions, one for clockwise movement, the other
+     for counterclockwise movement. Most tablets have up to 4 wheel
+     actions, for some reason though, the LPU1102 has five of them:
+     <ul>
+     <li>The <em>id</em> attribute is used to determine the kind of
+     action that is set. If 0, then the default action is set, if 1 then
+     the wheel action has no effect, if 2, then a custom wheel action is
+     set;</li>
+     <li>If a custom wheel action is set, the content is set to the
+     wheel action definition (see Action documentation for details, in
+     particular “Action Type 4: wheel actions”);</li>
+     <li>Please note that, contrary to the tags owning the
+     <em>actid</em> attribute, it seems there is no way to change the
+     default wheel action;</li>
+     </ul></li>
+     </ul></li>
+     <li><strong>R2</strong>) Description of the second ring of the
+     tablet. If the tablet has no rings or no second ring, this node is
+     absent;
+     <ul>
+     <li>the <em>id</em> attribute is the same as
+     <strong>R</strong>’s;</li>
+     <li>the <em>mode</em> attribute is used to determine the “mode”…
+     too bad I don’t know what that means;</li>
+     <li><strong>W&lt;N&gt;</strong>) Same as <strong>R</strong>’s;</li>
+     </ul></li>
+     <li><strong>TR</strong>) Alternative description of the second ring
+     of the tablet. For some reason, this is used, instead of “R2”, only
+     on the LPU1505F device. Apart from that, it’s equivalent to
+     <strong>R2</strong>;</li>
+     </ul></li>
+     <li><strong>Apps</strong>) Properties that apply to particular
+     “apps”. As reported in “22.3.5 Applications and Others” of the page
+     <a
+     href="https://www.ugee.com/subsidiary/setup-ue16">https://www.ugee.com/subsidiary/setup-ue16</a>,
+     it is possible to add per-app settings, unfortunately, it seems
+     only the windows version of the drivers allows for this.
+     <ul>
+     <li><strong>app</strong>) A single app. For some reason, the
+     configuring program makes only a single app entry, with <em>id</em>
+     set to 0 and <em>name</em> set to 0… Is this some sort of default
+     entry? Nonetheless, these “apps” are ignored on GNU/Linux, :
+     <ul>
+     <li>The <em>id</em> attribute is used for… well… I don’t know;</li>
+     <li>The <em>name</em> attribute is used, I guess, to define a
+     friendly name for the app;</li>
+     <li><strong>path</strong>) A supposed path to an executable, I
+     guess;</li>
+     <li>The rest of tags mimic the ones contained in
+     <strong>CommonAPP</strong>, except that, for some reason, the
+     <strong>K</strong> nodes of the “id=0” app entry have no attributes
+     besides <em>id</em>;</li>
+     </ul></li>
+     </ul></li>
+     </ul>
+     <h2 id="action-documentation">Action documentation</h2>
+     <p>Now, the reason I decided to develop ugeeconfig in the first
+     place.</p>
+     <p>The main problem I had was the configuring program completely
+     ignoring input from keyboard, making it difficult to set custom
+     actions as keystrokes for the tablet/pen. Other than that, even if
+     enabled, “messages” would not show up, AT ALL. Other problems
+     include the complete non-working of deskkeys and all the commands
+     related to show/hide the configuring program and/or deskkeys
+     window. I tinkered with the QT5 framework, but I was not capable of
+     finding any way to solve and/or reproduce the problem reliably,
+     because of that, I decided to make some kind of command-line
+     editor, just to simplify things when defining custom actions, in
+     the hope that in the future the remainder of bugs get solved.</p>
+     <p>To set actions, there are two main ways:</p>
+     <ul>
+     <li><p>Default actions, identified by the <em>Actid</em> attribute.
+     These can be set to <strong>K</strong> nodes (tablet keys and
+     deskkeys) and <strong>PenBtn</strong> nodes;</p></li>
+     <li><p>Custom actions, defined in the contents of the particular
+     key/virtual key/button/wheel movement’s node;</p></li>
+     </ul>
+     <h3 id="default-actions-the-actid-attribute">Default actions: the
+     Actid attribute</h3>
+     <p>In the context of the configuring program, actids are used to
+     assign action to keys/buttons when no custom action is set. They
+     are also used for resetting the configuration when choosing
+     “restore configuration”. Theoretically, each keys/buttons/etc has
+     its own particular default actionid that is immutable, in practice
+     though, it is possible to force a particular actionid by writing it
+     in the XML config file itself.</p>
+     <p>Here follows the list of actionids that were found out during
+     the development of ugeeconfig, these should be all, though I’m not
+     sure:</p>
+     <table>
+     <colgroup>
+     <col style="width: 6%" />
+     <col style="width: 36%" />
+     <col style="width: 56%" />
+     </colgroup>
+     <thead>
+     <tr class="header">
+     <th style="text-align: center;">Actid</th>
+     <th style="text-align: center;">Description/Effect</th>
+     <th style="text-align: center;">Notes</th>
+     </tr>
+     </thead>
+     <tbody>
+     <tr class="odd">
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">DRIVER FUNCTS. DESCRIPTIONS</td>
+     <td style="text-align: center;">All unusable except for “10” (No
+     function set)</td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">1</td>
+     <td style="text-align: center;">Pen/Eraser</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">2</td>
+     <td style="text-align: center;">Mouse key</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">3</td>
+     <td style="text-align: center;">Keystroke</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">4</td>
+     <td style="text-align: center;">Device</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">5</td>
+     <td style="text-align: center;">Run application</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">6</td>
+     <td style="text-align: center;">System function</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">7</td>
+     <td style="text-align: center;">Multimedia</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">10</td>
+     <td style="text-align: center;">No function</td>
+     <td style="text-align: center;">No function set</td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">11</td>
+     <td style="text-align: center;">Customize</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">12</td>
+     <td style="text-align: center;">Default</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;"> </td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">MOUSE KEY COMBINATIONS</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">201</td>
+     <td style="text-align: center;">Shift</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">202</td>
+     <td style="text-align: center;">Left Alt</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">203</td>
+     <td style="text-align: center;">Right Alt</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">204</td>
+     <td style="text-align: center;">Ctrl</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">205</td>
+     <td style="text-align: center;">Space</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">206</td>
+     <td style="text-align: center;">Left Click</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">207</td>
+     <td style="text-align: center;">Right Click</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">208</td>
+     <td style="text-align: center;">Scroll Click</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">209</td>
+     <td style="text-align: center;">Left double click</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">210</td>
+     <td style="text-align: center;">Scroll up</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">211</td>
+     <td style="text-align: center;">Scroll down</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;"> </td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">PREDEFINED KEY STROKES</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">301</td>
+     <td style="text-align: center;">Keystroke “B”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">302</td>
+     <td style="text-align: center;">Keystroke “E”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">303</td>
+     <td style="text-align: center;">Keystroke “Alt”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">304</td>
+     <td style="text-align: center;">Keystroke “Space”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">305</td>
+     <td style="text-align: center;">Keystroke “Ctrl+S”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">306</td>
+     <td style="text-align: center;">Keystroke “Ctrl+Z”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">307</td>
+     <td style="text-align: center;">Keystroke “Ctrl+Alt+Z”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">308</td>
+     <td style="text-align: center;">Keystroke “Ctrl+Shift+Z”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">309</td>
+     <td style="text-align: center;">Keystroke “V”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">310</td>
+     <td style="text-align: center;">Keystroke “L”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">311</td>
+     <td style="text-align: center;">Keystroke “Ctrl+O”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">312</td>
+     <td style="text-align: center;">Keystroke “Ctrl+N”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">313</td>
+     <td style="text-align: center;">Keystroke “Ctrl+Shift+N”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">314</td>
+     <td style="text-align: center;">Keystroke “Ctrl+E”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">315</td>
+     <td style="text-align: center;">Keystroke “F”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">316</td>
+     <td style="text-align: center;">Keystroke “D”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">317</td>
+     <td style="text-align: center;">Keystroke “X”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">318</td>
+     <td style="text-align: center;">Keystroke “Ctrl+Delete”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">319</td>
+     <td style="text-align: center;">Keystroke “Ctrl+C”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">320</td>
+     <td style="text-align: center;">Keystroke “Ctrl+V”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">321</td>
+     <td style="text-align: center;">Keystroke “Ctrl++”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">322</td>
+     <td style="text-align: center;">Keystroke “Ctrl+-”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">323</td>
+     <td style="text-align: center;">Keystroke “Tab”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">324</td>
+     <td style="text-align: center;">Keystroke “F5”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">325</td>
+     <td style="text-align: center;">Keystroke “]”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">326</td>
+     <td style="text-align: center;">Keystroke “[”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">327</td>
+     <td style="text-align: center;">Keystroke “Ctrl+]”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">328</td>
+     <td style="text-align: center;">Keystroke “Ctrl+[”</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;"> </td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">FUNCTIONS</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">401</td>
+     <td style="text-align: center;">Display/Hide Driver Interface</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">402</td>
+     <td style="text-align: center;">Switch monitor</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">403</td>
+     <td style="text-align: center;">Pen/Eraser</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">404</td>
+     <td style="text-align: center;">Precision mode</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">405</td>
+     <td style="text-align: center;">Switch ring1 function</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">406</td>
+     <td style="text-align: center;">Switch ring2 function</td>
+     <td style="text-align: center;">Available only on devices with two
+     rings</td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">407</td>
+     <td style="text-align: center;">Change trackpad mode</td>
+     <td style="text-align: center;">Not sure what “trackpad” is in this
+     context</td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">408</td>
+     <td style="text-align: center;">[B]/[E]</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">409</td>
+     <td style="text-align: center;">Eraser</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">410</td>
+     <td style="text-align: center;">Desk keys</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;"> </td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">SYSTEM OPERATIONS</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">601</td>
+     <td style="text-align: center;">Lock screen</td>
+     <td style="text-align: center;">Not working on GNU/Linux</td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">602</td>
+     <td style="text-align: center;">Shutdown</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">603</td>
+     <td style="text-align: center;">Hibernate</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">604</td>
+     <td style="text-align: center;">Show activities</td>
+     <td style="text-align: center;">Not working on GNU/Linux</td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">605</td>
+     <td style="text-align: center;">Startup menu</td>
+     <td style="text-align: center;">Not working on GNU/Linux</td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;"> </td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">MULTIMEDIA OPERATIONS</td>
+     <td style="text-align: center;">None of these work on
+     GNU/Linux</td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">701</td>
+     <td style="text-align: center;">Previous</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">702</td>
+     <td style="text-align: center;">Next</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">703</td>
+     <td style="text-align: center;">Play/Pause</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">704</td>
+     <td style="text-align: center;">Volume+</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">705</td>
+     <td style="text-align: center;">Volume-</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">706</td>
+     <td style="text-align: center;">Mute</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     </tbody>
+     </table>
+     <p>The configuring program makes a default config file with unique
+     actid combinations per button/key etc for every single supported
+     device. For more details check the “DefaultConfigs.py” file, which
+     is responsible for the re-generation of the default XML config
+     file.</p>
+     <h3 id="custom-actions-action-type-n">Custom actions: Action type
+     &lt;N&gt;</h3>
+     <p>There are 8 types of custom actions, depending on the desired
+     behaviour that one wants to assign to buttons/virtual
+     keys/keys/wheel movements. The following paragraphs will describe
+     each custom action type in detail.</p>
+     <h3 id="action-type-1-keystroke">Action Type 1: Keystroke</h3>
+     <p>When the particular key is pressed, one or more keystroke events
+     are generated.</p>
+     <p>Please note that this paragraph’s info is valid only for the
+     GNU/Linux version of the driver, as it relies on X11
+     keysyms/keycodes.</p>
+     <p>Its format is:</p>
+     <pre><code>1||&lt;label&gt;|&lt;keystrokes&gt;</code></pre>
+     <p>where:</p>
+     <ul>
+     <li><p><code>&lt;label&gt;</code> is a string representing the
+     keystrokes. The configuring program simply sets this to the name of
+     all the entered keystrokes;</p></li>
+     <li><p><code>&lt;keystrokes&gt;</code> is a list of comma-separated
+     <code>&lt;keystroke&gt;</code> elements;</p></li>
+     <li><p>A <code>&lt;keystroke&gt;</code> is made of one or multiple
+     plus-separated <code>&lt;key&gt;</code> elements. A single
+     <code>&lt;key&gt;</code> has the format
+     <code>&lt;keysym&gt;:&lt;keycode&gt;</code> where
+     <code>&lt;keysym&gt;</code> is the X keysym (in decimal) of the
+     <code>&lt;key&gt;</code> and <code>&lt;keycode&gt;</code> is the
+     keycode (in decimal) of the <code>&lt;key&gt;</code>. Both of them
+     can be obtained by using the <code>xev</code> utility (remember to
+     convert the keysym to decimal, in <code>xev</code> that is given in
+     hexadecimal);</p></li>
+     </ul>
+     <p>Here’s an example:</p>
+     <pre><code>1||Ctrl+Alt+A,Alt+B|65507:37+65513:64+97:38,65513:64+98:56</code></pre>
+     <p>Let’s see why we get <code>65507:37+65513:64+97:38</code> for
+     Ctrl+Alt+A and <code>65513:64+98:56</code> for Alt+B.<br />
+     Run <code>xev</code> and gather the keys Ctrl, Alt, A and B. Here
+     follows the output from my own system:</p>
+     <pre><code>[...]
+
+KeyPress event, serial 38, synthetic NO, window 0x6000001,
+    root 0x3e2, subw 0x6000002, time 37149253, (41,45), root:(1781,497),
+    state 0x10, keycode 37 (keysym 0xffe3, Control_L), same_screen YES,
+    XLookupString gives 0 bytes: 
+    XmbLookupString gives 0 bytes: 
+    XFilterEvent returns: False
+
+&lt;[...]
+
+KeyPress event, serial 38, synthetic NO, window 0x6000001,
+    root 0x3e2, subw 0x6000002, time 37094557, (31,34), root:(1771,486),
+    state 0x10, keycode 64 (keysym 0xffe9, Alt_L), same_screen YES,
+    XLookupString gives 0 bytes: 
+    XmbLookupString gives 0 bytes: 
+    XFilterEvent returns: False
+
+[...]
+
+KeyPress event, serial 38, synthetic NO, window 0x6000001,
+    root 0x3e2, subw 0x6000002, time 37147894, (41,45), root:(1781,497),
+    state 0x10, keycode 38 (keysym 0x61, a), same_screen YES,
+    XLookupString gives 1 bytes: (61) &quot;a&quot;
+    XmbLookupString gives 1 bytes: (61) &quot;a&quot;
+    XFilterEvent returns: False
+
+[...]
+
+KeyPress event, serial 38, synthetic NO, window 0x6000001,
+    root 0x3e2, subw 0x6000002, time 37042662, (28,45), root:(1768,497),
+    state 0x10, keycode 56 (keysym 0x62, b), same_screen YES,
+    XLookupString gives 1 bytes: (62) &quot;b&quot;
+    XmbLookupString gives 1 bytes: (62) &quot;b&quot;
+    XFilterEvent returns: False
+
+[...]</code></pre>
+     <p>From this output, it can be concluded that:</p>
+     <ul>
+     <li><p>For Ctrl, the keysym is 0xffe3 (65507 in decimal) and the
+     keycode is 37. Ergo, to represent it, one has to write
+     “65507:37”;</p></li>
+     <li><p>For Alt, the keysym is 0xffe9 (65513 in decimal) and the
+     keycode is 64. Ergo, to represent it, one has to write
+     “65513:64”;</p></li>
+     <li><p>For A, the keysym is 0x61 (97 in decimal) and the keycode is
+     38. Ergo, to represent it, one has to write “97:38”;</p></li>
+     <li><p>For B, the keysym is 0x62 (98 in decimal) and the keycode is
+     56. Ergo, to represent it, one has to write “98:56”;</p></li>
+     </ul>
+     <h3 id="action-type-2-mouse-key">Action Type 2: Mouse key</h3>
+     <p>When the key is pressed, one or more mouse plus some arbitrary
+     control keys events are generated. Its format is:</p>
+     <pre><code>2||&lt;label&gt;|&lt;keys&gt;+&lt;click&gt;</code></pre>
+     <p>where:</p>
+     <ul>
+     <li><p><code>&lt;label&gt;</code> is a string representing the
+     mouse clicks and control keys. The configuring program simply sets
+     this to the name of all the entered keys/clicks;</p></li>
+     <li><p><code>&lt;keys&gt;</code> is a set of one or more actids
+     (range 201-205), separated by a plus;</p></li>
+     <li><p><code>&lt;click&gt;</code> is an actid among 206 to
+     211;</p></li>
+     </ul>
+     <p>Here are two examples:</p>
+     <pre><code>2||Ctrl+Left click|204+206
+2||Left double click|209</code></pre>
+     <h3 id="action-type-3-driver-functions">Action Type 3: Driver
+     functions</h3>
+     <p>This action type is strictly related to the interaction with the
+     ugee configuring program and/or the deskkeys window. Its format
+     is:</p>
+     <pre><code>3||&lt;label&gt;|&lt;function&gt;</code></pre>
+     <p>where:</p>
+     <ul>
+     <li><code>&lt;label&gt;</code> is a string representing the
+     particular chosen function;</li>
+     <li><code>&lt;function&gt;</code> is an actid among 401 to
+     410;</li>
+     </ul>
+     <p>Some examples are presented below:</p>
+     <pre><code>3||Pen/Eraser|403
+3||Eraser|409
+3||Desktop shortcut keys|410</code></pre>
+     <h3 id="action-type-5-executing-programs">Action Type 5: Executing
+     programs</h3>
+     <p>As the name suggests, with this action type, it is possible to
+     press some keys in order to run executables. Its format is:</p>
+     <pre><code>5||&lt;label&gt;|&lt;path&gt;</code></pre>
+     <p>where:</p>
+     <ul>
+     <li><code>&lt;label&gt;</code> is a label for the executable. The
+     configuring program sets this to the basename of the
+     executable;</li>
+     <li><code>&lt;path&gt;</code> is an absolute path to an executable.
+     Command line arguments are not supported;</li>
+     </ul>
+     <p>Here follows an example:</p>
+     <pre><code>5||glxgears|/usr/bin/glxgears</code></pre>
+     <h3 id="action-type-6-system-operations">Action Type 6: System
+     operations</h3>
+     <p>This action type is related to the execution of system
+     operations, its format is:</p>
+     <pre><code>6||&lt;label&gt;|&lt;sysop&gt;</code></pre>
+     <p>where:</p>
+     <ul>
+     <li><code>&lt;label&gt;</code> is a label for the particular
+     operation;</li>
+     <li><code>&lt;sysop&gt;</code> is an actid among 601 to 605;</li>
+     </ul>
+     <p>Here below are two examples:</p>
+     <pre><code>6||Shutdown|602
+6||Hibernate|603</code></pre>
+     <h3 id="action-type-7-multimedia-functions">Action Type 7:
+     Multimedia functions</h3>
+     <p>This action type’s commands simply executes some multimedia
+     actions (play/pause etc..).<br />
+     Even when forced, this action type does not work on
+     GNU/Linux.<br />
+     Its format is the following:</p>
+     <pre><code>7||&lt;label&gt;|&lt;multimediaop&gt;</code></pre>
+     <p>where:</p>
+     <ul>
+     <li><code>&lt;label&gt;</code> is a label for the particular
+     multimedia operation;</li>
+     <li><code>&lt;multimediaop&gt;</code> is an actid among 701 to
+     706;</li>
+     </ul>
+     <p>An example of this is:</p>
+     <pre><code>7||Previous|701</code></pre>
+     <h3 id="action-type-10-unused">Action Type 10: Unused</h3>
+     <p>This is used when selecting “no function”, that is, the
+     button/key is not mapped to anything, not even it’s default action.
+     Its format is:</p>
+     <pre><code>10|No function|No function</code></pre>
+     <p>In reality, the two texts are simple labels, they change
+     according to the language, so it shouldn’t matter what is actually
+     written there, what is actually important, is the “10” value.</p>
+     <h3 id="action-type-4-wheel-actions">Action type 4: Wheel
+     actions</h3>
+     <p>Some tablets, like the UE16, have one or more “rings” (they are
+     called “rollers” in the FAQs). These are rotable knobs that if
+     rotated in a certain direction, a certain action is performed.</p>
+     <p>For each ring, there are up to 4 possible wheel actions (that’s
+     how I decided to call them, poor name, I know), that is, a pair of
+     single actions, one for clockwise movement and the other for
+     counterclockwise movement.<br />
+     A ring can use only one wheel action at a time, but it is possible
+     to cycle over them (with actids 405 and 406).</p>
+     <p>This action type applies to the <strong>W&lt;N&gt;</strong>
+     element, when it is set, its <em>id</em> attribute is set to 2 and
+     its contents have the following format:</p>
+     <pre><code>4|&lt;label&gt;|&lt;ccwlabel&gt;|&lt;cwlabel&gt;|&lt;ccwkstrokes&gt;|&lt;cwkstrokes&gt;</code></pre>
+     <p>where:</p>
+     <ul>
+     <li><code>&lt;label&gt;</code> is supposed to be a label describing
+     the pair of actions. As far as I noticed, the configuring program
+     sets this to “custom”;</li>
+     <li><code>&lt;ccwlabel&gt;</code> is the label for the
+     counterclockwise action. The configuring program sets it based on
+     the entered keys;</li>
+     <li><code>&lt;cwlabel&gt;</code> is the label for the clockwise
+     action. The configuring program sets it based on the entered
+     keys;</li>
+     <li><code>&lt;ccwstrokes&gt;</code> is a
+     <code>&lt;keystrokes&gt;</code> element, as defined in the section
+     “Action Type 1: Keystrokes”. This one is used when performing the
+     counterclockwise movement;</li>
+     <li><code>&lt;cwstrokes&gt;</code> is a
+     <code>&lt;keystrokes&gt;</code> element, as defined in the section
+     “Action Type 1: Keystrokes”. This one is used when performing the
+     clockwise movement;</li>
+     </ul>
+     <p>As already said, contrary to other type of keys/buttons, the
+     pair of custom actions can only be keystrokes, the same ones
+     already treated in the section “Action Type 1: Keystrokes”.</p>
+     <p>In the following example:</p>
+     <pre><code>4|Customize|A|B|97:38|98:56</code></pre>
+     <p>If a clockwise rotation is performed then the letter “A” will be
+     produced, if a counterclockwise rotation is performed, “B” is
+     produced.</p>
+     <p>Please note that it is also possible to define only one of the
+     two available custom action, consider the following:</p>
+     <pre><code>4|Customize|A||97:38|</code></pre>
+     <p>In this case, only the clockwise rotation produces something
+     (“A”).</p>
+    </body>
+</html>
