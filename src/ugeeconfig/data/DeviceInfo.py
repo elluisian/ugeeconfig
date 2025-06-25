@@ -1,3 +1,10 @@
+# Copyright 2025 elluisian
+#
+# This file is subject to the BSD 3-Clause License.
+# See the LICENSE file for details.
+
+
+
 class DeviceInfo(object):
     def __init__(self, ringnum, keynum, pentype, trackpad=None, control=None, key_direction=None):
         self.ringnum = ringnum

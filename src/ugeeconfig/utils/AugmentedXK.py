@@ -1,5 +1,14 @@
 #!/usr/bin/python3
 
+
+
+# Copyright 2025 elluisian
+#
+# This file is subject to the BSD 3-Clause License.
+# See the LICENSE file for details.
+
+
+
 # This module adds some supplementary functionalities to Xlib.XK (so the name).
 # Inspired by pykey/critkey (https://shallowsky.com/blog/programming/crikey-python-and-xtest.html).
 # To better use it, it should be sufficient to do: from AugmentedXK import Xlib

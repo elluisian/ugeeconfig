@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Copyright 2025 elluisian
+#
+# This file is subject to the BSD 3-Clause License.
+# See the LICENSE file for details.
+
+
 
 ../ugeeconfig.sh from default-config.xml to xournalpp-config-ue16.xml set \
 \

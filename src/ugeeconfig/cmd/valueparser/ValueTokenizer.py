@@ -1,3 +1,9 @@
+# Copyright 2025 elluisian
+#
+# This file is subject to the BSD 3-Clause License.
+# See the LICENSE file for details.
+
+
 from ...utils.lexer.CommonTokenReaders import *
 from ...utils.lexer.NumericTokReader import *
 from ...utils.lexer.Tokenizer import *
