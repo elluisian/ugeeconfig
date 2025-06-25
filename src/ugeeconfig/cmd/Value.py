@@ -56,6 +56,10 @@ class Value(object):
             self.type = PTYPE_INTEGER
             self.v = Value.__makeInteger(tVal)
 
+        elif tType == TOKEN_FLOAT:
+            self.type = PTYPE_FLOAT
+            self.v = Value.__makeFloat(tVal)
+
         elif tType == TOKEN_RECTANGLE:
             self.type = PTYPE_RECTANGLE
             v1 = Value.__makeInteger(elems[1].getTokenValue())
@@ -201,7 +205,7 @@ class Value(object):
                 keystrkLs.append(keystrkInst)
                 firstTime = False
 
-            if currType in (TOKEN_IDENTIFIER, TOKEN_GARBAGE, TOKEN_TRUE, TOKEN_FALSE,):
+            if currType in (TOKEN_IDENTIFIER, TOKEN_GARBAGE, TOKEN_TRUE, TOKEN_FALSE, TOKEN_DECIMAL_INTEGER, TOKEN_OCTAL_INTEGER, TOKEN_BINARY_INTEGER, TOKEN_HEXADECIMAL_INTEGER,):
                 value = currT.getTokenValue()
                 singleKey = SingleKey.fromKeyName(value)
                 if singleKey is None:
@@ -211,6 +215,8 @@ class Value(object):
             elif currType == TOKEN_ARG_SEP:
                 keystrkInst = Keystroke()
                 keystrkLs.append(keystrkInst)
+
+
 
         return keystrkLs
 

@@ -33,6 +33,7 @@ TOKEN_ARG_PLUS = "tk_arg_plus"
 class ValueTokenizer(Tokenizer):
     def __init__(self, inp):
         super().__init__(inp, ",+() ")
+        # Characters that will "interrupt" identifiers are commas, pluses, parentheses and whitespace
 
     def getTokenReaders(self, inpr, disruptingAlphabet):
         return (

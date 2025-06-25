@@ -10,7 +10,6 @@ NT_S = "nt_s"
 NT_A = "nt_a"
 NT_B = "nt_b"
 NT_C = "nt_c"
-NT_D = "nt_d"
 
 TG_NOARGF = "tg_noargf" # unset, nop
 TG_SNARGF = "tg_snargf" # funct, sysop, multimedia
@@ -67,12 +66,13 @@ class ValueParser(object):
         15:  ( NT_S  ,  TOKEN_PRESSURE, TOKEN_ARG_GOPEN, TG_NUMERIC, TOKEN_ARG_SEP, TG_NUMERIC, TOKEN_ARG_SEP, TG_NUMERIC, TOKEN_ARG_SEP, TG_NUMERIC, TOKEN_ARG_GCLOSE, TOKEN_EOI, ),
         16:  ( NT_S  ,  TG_STRING, TOKEN_EOI, ),
         17:  ( NT_S  ,  ),
-        18:  ( NT_C  ,  TOKEN_ARG_SEP, TOKEN_IDENTIFIER, NT_C, ),
+        18:  ( NT_C  ,  TOKEN_ARG_SEP, TG_KEY, NT_C, ),
+        19:  ( NT_S  ,  TOKEN_FLOAT, TOKEN_EOI, ),
     }
 
     LL1_TABLE = {
         #        [NOARGF] [SNARGF] [INTEGER] IDENTIFIER FLOAT keys mouse exec   (   ,   )   +   T   F  RT  PR  GRB   $
-        NT_S:   (       0,       3,      13,         16,   ER,   8,    5,   4, ER, ER, ER, ER, 11, 12, 14, 15,  16, 17 ),
+        NT_S:   (       0,       3,      13,         16,   19,   8,    5,   4, ER, ER, ER, ER, 11, 12, 14, 15,  16, 17 ),
         NT_A:   (      ER,      ER,      ER,         ER,   ER,  ER,   ER,  ER,  1, ER, ER, ER, ER, ER, ER, ER,  ER,  2 ),
         NT_B:   (      ER,      ER,      ER,         ER,   ER,  ER,   ER,  ER, ER, ER,  7,  6, ER, ER, ER, ER,  ER, ER ),
         NT_C:   (      ER,      ER,      ER,         ER,   ER,  ER,   ER,  ER, ER, 18, 10,  9, ER, ER, ER, ER,  ER, ER ),
@@ -252,7 +252,7 @@ class ValueParser(object):
         elif tokGroup == TG_STRING:
             return tokType in (TOKEN_IDENTIFIER, TOKEN_GARBAGE,)
         elif tokGroup == TG_KEY:
-            return tokType in (TOKEN_IDENTIFIER, TOKEN_TRUE, TOKEN_FALSE,)
+            return tokType in (TOKEN_IDENTIFIER, TOKEN_TRUE, TOKEN_FALSE) or ValueParser.__isIntegerTokType(tokType)
 
     @staticmethod
     def __isIntegerTokType(tokType):
@@ -263,6 +263,8 @@ class ValueParser(object):
     @staticmethod
     def __printf(message, newline=True):
         if DEBUG_PARSING:
+            if not isinstance(message, str):
+                message = str(message)
             printf(message)
             if newline:
                 printf("\n")
