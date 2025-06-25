@@ -319,8 +319,8 @@ class WheelCustomActionData(object):
     def getCCWLabel(self):
         return self.ccwlabel
 
-    def setCCWLabel(self, cwlabel):
-        self.cwlabel = ccwlabel
+    def setCCWLabel(self, ccwlabel):
+        self.ccwlabel = ccwlabel
 
     def setCWAction(self, cwaction):
         if not isinstance(cwaction, KeysAction):

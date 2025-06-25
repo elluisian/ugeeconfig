@@ -11,7 +11,7 @@ class RingElement(XMLElement):
         if ring.mode is not None:
             el.attribs["mode"] = int_to_xmint(ring.mode)
 
-        el.attribs["id"] = ring.selected_wheel
+        el.attribs["id"] = int_to_xmint(ring.getSelectedWheel())
 
         wheelacts = ring.getWheelActMovemenets()
 
@@ -33,9 +33,9 @@ class RingElement(XMLElement):
         tag_name = elem.tag
 
         if "id" in elem.attrib:
-            selected_button = xmint_to_int(elem.attrib["id"])
+            selected_wheel = xmint_to_int(elem.attrib["id"])
         else:
-            selected_button = None
+            selected_wheel = None
 
         if "mode" in elem.attrib:
             mode = xmint_to_int(elem.attrib["mode"])
@@ -48,4 +48,4 @@ class RingElement(XMLElement):
             wheelb = wel.readFromElement(wchild, version)
             wheelactbtns.append(wheelb)
 
-        return Ring(tag_name, selected_button, mode, wheelactbtns)
+        return Ring(tag_name, selected_wheel, mode, wheelactbtns)

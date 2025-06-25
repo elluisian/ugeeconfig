@@ -29,6 +29,13 @@ class Ring(object):
         return whmov
 
 
+    def setSelectedWheel(self, selected_wheel):
+        self.selected_wheel = selected_wheel
+
+
+    def getSelectedWheel(self):
+        return self.selected_wheel
+
 
     def __deepcopy__(self, m):
         return Ring(self.tag_name, self.selected_wheel, self.mode, list(map(lambda x : deepcopy(x), self.getWheelActMovements())))

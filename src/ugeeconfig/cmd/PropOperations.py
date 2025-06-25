@@ -25,8 +25,14 @@ def __get_penbtn(device, penbtn):
 def __get_tabkey(device, tabkey):
     return __get_commonapp_settings(device).getTabletBtn(tabkey)
 
+def __get_ring(device, ringName):
+    return __get_commonapp_settings(device).getRingByTagName(ringName)
+
 def __get_wheelactmov(device, ringName, wheelbtn):
-    return __get_commonapp_settings(device).getRingByTagName(ringName).getWheelActMovementByTagNo(wheelbtn)
+    return __get_ring(device, ringName).getWheelActMovementByTagNo(wheelbtn)
+
+
+
 
 def __get_vkey(vkeyName):
     return __get_deskshortcutkeys().getVKeyByTagNo(vkeyName)
@@ -419,6 +425,27 @@ def multiple_tablet_key_get_custom_action_enabled(params):
 
 
 
+
+
+# RING WHEEL MOVEMENT SELECTION
+def multiple_ring_set_selected_wheelmov(params, v):
+    device = params[0]
+    ringName = params[1]
+
+    ringInst = __get_ring(device, ringName)
+    wheelNames = ringInst.getWheelActMovementNames()
+    selected_wheel = 0
+    if v.v in wheelNames:
+        selected_wheel = v.v - 1
+    ringInst.setSelectedWheel(selected_wheel)
+
+def multiple_ring_get_selected_wheelmov(params):
+    device = params[0]
+    ringName = params[1]
+    return __get_ring(device, ringName).getSelectedWheel()
+
+
+
 # WHEEL MOVEMENT
 def multiple_ring_wheelmov_set_custom_ccwaction(params, v):
     device = params[0]
@@ -445,6 +472,8 @@ def multiple_ring_wheelmov_get_custom_ccwaction_label(params):
     ringName = params[1]
     wheelbtn = multiget_ring_wheel_movements_extract(params[2])
     return __get_customactdata(__get_wheelactmov(device, ringName, wheelbtn)).getCCWLabel()
+
+
 
 
 
