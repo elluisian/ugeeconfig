@@ -1,3 +1,10 @@
+# Copyright 2025 elluisian
+#
+# This file is subject to the BSD 3-Clause License.
+# See the LICENSE file for details.
+
+
+
 TOKEN_EOI = "eoi"
 TOKEN_INVALID = "invalid" # Used in order to let other TokenReaders analyze
 

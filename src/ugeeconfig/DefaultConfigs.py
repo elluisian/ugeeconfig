@@ -1,4 +1,9 @@
-#!/usr/bin/python3
+# Copyright 2025 elluisian
+#
+# This file is subject to the BSD 3-Clause License.
+# See the LICENSE file for details.
+
+
 
 from .utils.utils import *
 from .data.DeviceInfo import *
