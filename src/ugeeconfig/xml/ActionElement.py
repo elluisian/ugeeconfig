@@ -221,7 +221,7 @@ class ActionElement(XMLElement):
                 ccwLabel = self.customActionDataInst.getCCWLabel()
                 ccwLabel = "" if ccwLabel is None else ccwLabel
                 cwLabel = self.customActionDataInst.getCWLabel()
-                cwLabel = "" if ccwLabel is None else ccwLabel
+                cwLabel = "" if cwLabel is None else cwLabel
                 ccwKeystrokes = ActionElement.__writeKeystrokes(ccwActInst.getKeystrokes()) if ccwActInst is not None else ""
                 cwKeystrokes = ActionElement.__writeKeystrokes(cwActInst.getKeystrokes()) if cwActInst is not None else ""
                 usage = self.customActionDataInst.getUsage()

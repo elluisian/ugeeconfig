@@ -36,7 +36,7 @@ class PressurePoints(object):
 
 
     def __str__(self):
-        return "press(%d, %d:%d, %d)" % (self.p0, self.p1.x, self.p1.y, self.p2)
+        return "press(%.1f, %.1f:%.1f, %.1f)" % (self.p0, self.p1.x, self.p1.y, self.p2)
 
     def __repr__(self):
         return self.__str__()
