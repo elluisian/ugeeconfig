@@ -405,6 +405,10 @@ Please note that the output is very long, so it might be a good idea to save it 
 ./ugeeconfig.sh xkeysyms > ugee_config-xkeysyms.txt
 ```
 
+Another way to gather the correct xkeysyms is to use utilities like `xev`, which allows to detect xkeysyms associated with keyboard keys in real time, while pressing them.
+Please note that different locales (utilities like ibus affect this the same way) will require different xkeysyms to perform the same action, in general, what is needed is not the output produced, but the keys used to reach that output.
+Consider the left bracket character "[", to get that in Italian keyboards, you have to press AltGr followed by the grave accented E key. You may be tempted to configure a tablet key to use `keys(bracketleft)`, but in the Italian locale it won't work, what will is `keys(altgr+egrave)`.
+
 
 ### Reading and saving configuration files
 
