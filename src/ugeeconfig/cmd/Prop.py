@@ -24,6 +24,7 @@ PROPT_LEAF = 4
 
 
 DEBUG_GENERATION = False
+DEBUG_PROPS = False
 
 
 
@@ -503,6 +504,26 @@ def generateGrammar():
         (DESKKEYS_PROP_NAME, "Deskkeys data",)
     )
 
+    if DEBUG_PROPS:
+        Prop.HIERARCHY_GRAMMAR.addSingleGroups(
+            ("debug", "A simple debug group pop",)
+        )
+
+        setter = lambda x, y : None
+        getter = lambda x : x
+
+        Prop.HIERARCHY_GRAMMAR.debug.addLeaves(
+            ("flag", "Boolean", PTYPE_BOOLEAN, setter, getter, generic_formatter),
+            ("pressure", "Pressure points", PTYPE_PRESSURE, setter, getter, generic_formatter),
+            ("speed", "Integer", PTYPE_INTEGER, setter, getter, generic_formatter),
+            ("speedF", "Float", PTYPE_FLOAT, setter, getter, generic_formatter),
+            ("label", "Label for the custom action", PTYPE_STRING, setter, getter, generic_formatter),
+            ("action_default", "Default action for the pen button", PTYPE_DEFAULT_ACTION, setter, getter, actid_formatter),
+            ("custom_action", "Custom action", PTYPE_CUSTOM_ACTION, setter, getter, generic_formatter),
+            ("usage", "Wheel movement usage", PTYPE_WHEEL_USAGE, setter, getter, generic_formatter),
+            ("rect", "Rectangle", PTYPE_RECTANGLE, setter, getter, generic_formatter),
+        )
+
 
     DEVICE_PROP = Prop.HIERARCHY_GRAMMAR.getChildByName(DEVICE_PROP_NAME)
     DESKKEYS_PROP = Prop.HIERARCHY_GRAMMAR.getChildByName(DESKKEYS_PROP_NAME)
@@ -615,6 +636,13 @@ def generateGrammar():
         ("enabled", "Enable/Disable the usage of the custom action", PTYPE_BOOLEAN, multiple_tablet_key_set_custom_action_enabled, multiple_tablet_key_get_custom_action_enabled, generic_formatter),
         ("label",  "Label for the custom action", PTYPE_STRING, multiple_tablet_key_set_custom_action_label, multiple_tablet_key_get_custom_action_label, generic_formatter),
         ("action", "Action itself", PTYPE_CUSTOM_ACTION, multiple_tablet_key_set_custom_action, multiple_tablet_key_get_custom_action, generic_formatter),
+    )
+
+
+    ###########################################
+    # DEVICE.tablet.<RINGNAME>.(selected_wheel)
+    DEVICE_PROP.tablet.ring.addLeaves(
+        ("selected_wheel", "Selected wheel action movement", PTYPE_INTEGER, multiple_ring_set_selected_wheelmov, multiple_ring_get_selected_wheelmov, generic_formatter,),
     )
 
 
