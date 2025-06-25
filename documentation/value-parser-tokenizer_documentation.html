@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="author" content="elluisian">
+        <title>Value parser documentation and numeric tokenizer</title>
+        <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+        }
+        ul>li:first-child {
+            margin-top: 10pt;
+        }
+        ul>li:not(first-child), ul>li:not(last-child) {
+            margin-bottom: 10pt;
+        }
+        ul>li:last-child {
+            margin-bottom: 25pt;
+        }
+        </style>
+    </head>
+    <body>
+     <h1 id="parser-for-value-instances-and-numeric-tokenizer">Parser
+     for Value instances and numeric tokenizer</h1>
+     <p>In this document, the LL1 parser and the numeric tokenizer used
+     to detect Value instances is described. Apart from some different
+     names, it should be very similar to the final implementation.</p>
+     <h2 id="terminals-tokens">Terminals (=tokens)</h2>
+     <ul>
+     <li>[SNARGF] = FUNCT | SYSOP | MULTIMEDIA</li>
+     <li>[STRING] = IDENTIFIER | GARBAGE</li>
+     <li>[NOARGF] = NOP | UNSET</li>
+     <li>[ACTID] = [INTEGER] | IDENTIFIER</li>
+     <li>[KNAME] = [INTEGER] | IDENTIFIER | TRUE | FALSE</li>
+     <li>[NUMERIC] = [INTEGER] | FLOAT</li>
+     <li>[INTEGER] = BINARY_INTEGER, OCTAL_INTEGER, DECIMAL_INTEGER,
+     HEXADECIMAL_INTEGER</li>
+     <li>TRUE, FALSE, RECT, PRESS, EXEC, MOUSE, KEYS, (, ), +, “,”
+     (comma), $</li>
+     </ul>
+     <p>Please note that:</p>
+     <ul>
+     <li>Whitespace is read by the parser, but is discarded;</li>
+     <li>“$” is a token indicating the end of input (EOI);</li>
+     </ul>
+     <h2 id="non-terminals-productions">Non-terminals
+     (=productions)</h2>
+     <ul>
+     <li>0: &lt;S&gt; → [NOARGF] &lt;A&gt; $</li>
+     <li>1: &lt;A&gt; → ( )</li>
+     <li>2: &lt;A&gt; → ε</li>
+     <li>3: &lt;S&gt; → [SNARGF] ( [ACTID] ) $</li>
+     <li>4: &lt;S&gt; → EXEC ( [STRING] ) $</li>
+     <li>5: &lt;S&gt; → MOUSE ( [ACTID] &lt;B&gt; $</li>
+     <li>6: &lt;B&gt; → + [ACTID] &lt;B&gt; $</li>
+     <li>7: &lt;B&gt; → ) $</li>
+     <li>8: &lt;S&gt; → KEYS ( [KNAME] &lt;C&gt; $</li>
+     <li>9: &lt;C&gt; → + [KNAME] &lt;C&gt;</li>
+     <li>10: &lt;C&gt; → )</li>
+     <li>11: &lt;S&gt; → TRUE $</li>
+     <li>12: &lt;S&gt; → FALSE $</li>
+     <li>13: &lt;S&gt; → [INTEGER] $</li>
+     <li>14: &lt;S&gt; → RECT ( [INTEGER], [INTEGER], [INTEGER],
+     [INTEGER] ) $</li>
+     <li>15: &lt;S&gt; → PRESS ( [NUMERIC], [NUMERIC], [NUMERIC],
+     [NUMERIC] ) $</li>
+     <li>16: &lt;S&gt; → [STRING] $</li>
+     <li>17: &lt;S&gt; → ε</li>
+     <li>18: &lt;C&gt; → , [IDENTIFIER] &lt;C&gt;</li>
+     <li>19: &lt;S&gt; → FLOAT $</li>
+     </ul>
+     <p>Please note that “ε” means that the production produces the
+     empty string (string with no characters, usually denoted as “” in
+     languages);</p>
+     <h2 id="nullable-first-follow-table">Nullable, First, Follow
+     table</h2>
+     <p>This table is needed in order to create the productions table
+     below, a small reminder of what this is all about…</p>
+     <ul>
+     <li>Nullable: Tells whether a NT (Non-terminal) can “become” the
+     empty string. If a production is of the form “NT → ε” or “NT → NT2”
+     and “NT2 → ε” exists, then yes, it is nullable, otherwise, it’s
+     not;</li>
+     <li>First: A set containing the first tokens encountered by a NT,
+     considering all the productions in which the NT is on the lhs (left
+     hand-side), that is, before "→";</li>
+     <li>Follow: A set used only in case of NT being nullable. It
+     contains the tokens that follow NT, when NT appears in any
+     production (not the ones in which NT is on the lhs);</li>
+     </ul>
+     <p>Here’s the table:</p>
+     <table>
+     <colgroup>
+     <col style="width: 13%" />
+     <col style="width: 33%" />
+     <col style="width: 23%" />
+     <col style="width: 30%" />
+     </colgroup>
+     <thead>
+     <tr class="header">
+     <th style="text-align: center;">NT</th>
+     <th style="text-align: center;">NULLABLE</th>
+     <th style="text-align: center;">FIRST</th>
+     <th style="text-align: center;">FOLLOW</th>
+     </tr>
+     </thead>
+     <tbody>
+     <tr class="odd">
+     <td style="text-align: center;">&lt;S&gt;</td>
+     <td style="text-align: center;">Yes</td>
+     <td style="text-align: center;">[NOARGF] [SNARGF] EXEC MOUSE KEYS
+     TRUE FALSE [INTEGER] RECT PRESS [STRING] FLOAT</td>
+     <td style="text-align: center;">$</td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">&lt;A&gt;</td>
+     <td style="text-align: center;">Yes</td>
+     <td style="text-align: center;">(</td>
+     <td style="text-align: center;">$</td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">&lt;B&gt;</td>
+     <td style="text-align: center;">No</td>
+     <td style="text-align: center;">+ )</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">&lt;C&gt;</td>
+     <td style="text-align: center;">No</td>
+     <td style="text-align: center;">+ )</td>
+     <td style="text-align: center;"></td>
+     </tr>
+     </tbody>
+     </table>
+     <p>To understand, the &lt;S&gt; and &lt;A&gt; NTs will be taken as
+     examples, the rest is no-brainer once the logic is understood.</p>
+     <ul>
+     <li><p>&lt;S&gt; is nullable, as the production “&lt;S&gt; → ε”
+     exists;</p></li>
+     <li><p>Considering all productions with &lt;S&gt; as lhs (0, 3, 4,
+     5, 8, 11, 12, 13, 14, 15, 16, 17 and 19), the “first tokens” are
+     the ones reported in the table;</p></li>
+     <li><p>Being nullable, we must determine the “Follow” set… being
+     &lt;S&gt; the “starting point”, the only possible token is end of
+     input (“$”), as if the starting point is empty, then there are no
+     tokens to process and thus EOI is reached. Please note that this
+     way, the empty string (““) is recognized as part of the
+     grammar;</p></li>
+     <li><p>&lt;A&gt; is nullable, as the production “&lt;A&gt; → ε”
+     exists;</p></li>
+     <li><p>Considering all productions with &lt;A&gt; as lhs (1 and 2),
+     the only “first token” is “(”;</p></li>
+     <li><p>As for the “Follow” set, in this case, &lt;A&gt; is NOT a
+     starting point, but the production “&lt;S&gt; → [NOARGF] &lt;A&gt;
+     $” exists, and whatever &lt;A&gt;’s transformation is, it will
+     always be followed by "$", so, the “Follow” set will only contain
+     "$";</p></li>
+     </ul>
+     <p>The others are more straightforward as they aren’t nullable, so
+     only the “First” set must be determined.</p>
+     <h2 id="ll1-table">LL1 table</h2>
+     <p>This table is the one used by the parsing algorithm, in order to
+     properly detect the correct sentences of this small language.</p>
+     <p>LL1 stands for “Left-to-right” “Leftmost derivation” “1
+     (lookahead)”, it’s a type of parser/grammar which:</p>
+     <ul>
+     <li>Scans the input from left to right;</li>
+     <li>It reads the leftmost symbol first;</li>
+     <li>It uses 1 token to make parsing decisions;</li>
+     </ul>
+     <p>If you’re unfamiliar with this, this comes from formal languages
+     theory in Computer science, a field that explains the mathematical
+     foundations for lexers (tokenizers) and parsers. A tokenizer is a
+     module capable of distinguishing the valid tokens of a language,
+     the parser is capable of detecting if said tokens are laid out in a
+     way that respects the language’s grammar. LL1 is the easiest type
+     of parser to build, but also the weakest in terms of
+     capabilities.</p>
+     <p>To make this table, the columns will contain the used terminals,
+     the rows will contain the used NTs, then, for every pair “(NT,
+     T)”:</p>
+     <ul>
+     <li>If the single terminal T is in the “First” set of NT (=NT is in
+     “First” column of the previous table), then fill the corresponding
+     cell with the production’s number in which the terminal T is found
+     as first token. That situation is encountered if a production of
+     the form “NT → T …” exists or both “NT → NT2 …” and “NT2 → T…”
+     exist as productions;</li>
+     <li>If the single terminal T is not in the “First” set of NT, then
+     leave the corresponding cell empty, as that’s a syntax error;</li>
+     <li>If NT is nullable, then consider the tokens that follow it
+     (Those that are reported in the “Follow” column of the previous
+     table) and for each of them, fill their corresponding cell with the
+     NT’s production number which produces the empty string (the
+     production with form “NT → ε”);</li>
+     </ul>
+     <p>The result is the following:</p>
+     <table style="width:100%;">
+     <colgroup>
+     <col style="width: 4%" />
+     <col style="width: 9%" />
+     <col style="width: 9%" />
+     <col style="width: 8%" />
+     <col style="width: 9%" />
+     <col style="width: 5%" />
+     <col style="width: 4%" />
+     <col style="width: 5%" />
+     <col style="width: 4%" />
+     <col style="width: 2%" />
+     <col style="width: 3%" />
+     <col style="width: 3%" />
+     <col style="width: 2%" />
+     <col style="width: 4%" />
+     <col style="width: 5%" />
+     <col style="width: 4%" />
+     <col style="width: 5%" />
+     <col style="width: 6%" />
+     <col style="width: 3%" />
+     </colgroup>
+     <thead>
+     <tr class="header">
+     <th style="text-align: center;"></th>
+     <th style="text-align: center;">[NOARGF]</th>
+     <th style="text-align: center;">[SNARGF]</th>
+     <th style="text-align: center;">[INTEGER]</th>
+     <th style="text-align: center;">IDENTIFIER</th>
+     <th style="text-align: center;">FLOAT</th>
+     <th style="text-align: center;">KEYS</th>
+     <th style="text-align: center;">MOUSE</th>
+     <th style="text-align: center;">EXEC</th>
+     <th style="text-align: center;">(</th>
+     <th style="text-align: center;">,</th>
+     <th style="text-align: center;">)</th>
+     <th style="text-align: center;">+</th>
+     <th style="text-align: center;">TRUE</th>
+     <th style="text-align: center;">FALSE</th>
+     <th style="text-align: center;">RECT</th>
+     <th style="text-align: center;">PRESS</th>
+     <th style="text-align: center;">GARBAGE</th>
+     <th style="text-align: center;">$</th>
+     </tr>
+     </thead>
+     <tbody>
+     <tr class="odd">
+     <td style="text-align: center;">&lt;S&gt;</td>
+     <td style="text-align: center;">0</td>
+     <td style="text-align: center;">3</td>
+     <td style="text-align: center;">13</td>
+     <td style="text-align: center;">16</td>
+     <td style="text-align: center;">19</td>
+     <td style="text-align: center;">8</td>
+     <td style="text-align: center;">5</td>
+     <td style="text-align: center;">4</td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">11</td>
+     <td style="text-align: center;">12</td>
+     <td style="text-align: center;">14</td>
+     <td style="text-align: center;">15</td>
+     <td style="text-align: center;">16</td>
+     <td style="text-align: center;">17</td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">&lt;A&gt;</td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">1</td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">2</td>
+     </tr>
+     <tr class="odd">
+     <td style="text-align: center;">&lt;B&gt;</td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">7</td>
+     <td style="text-align: center;">6</td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     </tr>
+     <tr class="even">
+     <td style="text-align: center;">&lt;C&gt;</td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;">18</td>
+     <td style="text-align: center;">10</td>
+     <td style="text-align: center;">9</td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     <td style="text-align: center;"></td>
+     </tr>
+     </tbody>
+     </table>
+     <p>In this situation, &lt;S&gt; has multiple tokens in the “First”
+     set, so the respective production number is put in the cell related
+     to the particular (NT, T) pair. The parentheses, the plus and the
+     comma produce a syntax error instead.</p>
+     <p>Since &lt;S&gt; is nullable and is followed by "$", it’s empty
+     string production number (17) is put in the cell (&lt;S&gt;, “$”).
+     If multiple tokens were in the “Follow” set, that had to be done
+     for each token.</p>
+     <p>The rest of them are very easy to get, once you understand the
+     logic.</p>
+     <h2 id="numeric-tokenizer">Numeric tokenizer</h2>
+     <p>In the file <a
+     href="integer-automaton-for-tokenizer.png">integer-automaton-for-tokenizer.png</a>
+     it is reported the automaton for the integer values. In the
+     implementation, this was transformed into a TokenReader child
+     class.</p>
+     <p>Some of the transitions are reported as “(src, ‘symbol’) -&gt;
+     dest” in order to not complicate the drawing further.</p>
+     <p>The automaton recognizes:</p>
+     <ul>
+     <li>Standard decimal integers (e.g. 0, 1234, 52);</li>
+     <li>0d/0i prefixed decimal integers (e.g. 0d1234, 0i1234);</li>
+     <li>0b prefixed binary integers (e.g. 0b101010);</li>
+     <li>0o/0 prefixed octal integers (e.g. 0o12375, 0123474);</li>
+     <li>0x/0h prefixed hexadecimal integers (e.g. 0x123Af,
+     0h1234aF);</li>
+     <li>i/d suffixed decimal integers (e.g. 1234d, 31i);</li>
+     <li>b suffixed binary integers (e.g. 1010101b);</li>
+     <li>o suffixed octal integers (e.g. 12367o);</li>
+     <li>h/x suffixed hexadecimal integers (e.g. 128Abx, 128Abh);</li>
+     </ul>
+    </body>
+</html>
