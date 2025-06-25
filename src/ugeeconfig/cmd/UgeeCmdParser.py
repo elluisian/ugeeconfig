@@ -56,8 +56,19 @@ ugeeconfig xkeysyms
 - <prop>: is a dot-separated path, use the 'doc' operator to know the available ones;
 - <value>: may be:
     - a string;
-    - an integer;
-    - a float of the form "(digit)*.(digit)+";
+    - an integer with one of the following forms:
+        - 0b-prefixed binary integer (e.g. 0b101010);
+        - b-suffixed binary integer (e.g. 1010101010b);
+        - 0-prefixed octal integer (e.g. 023);
+        - 0o-prefixed octal integer (e.g. 0o23);
+        - o-suffixed octal integer (e.g. 234o);
+        - 0d-prefixed decimal integer (e.g. 0d123499);
+        - d-suffixed decimal integer (e.g. 123894d);
+        - 0x-prefixed hexadecimal integer (e.g. 0xaf98d);
+        - 0h-prefixed hexadecimal integer (e.g. 0haf98d);
+        - x-suffixed hexadecimal integer (e.g. af98dx);
+        - h suffixed hexadecimal integer (e.g. af98dh);
+    - a float of the form "(decimal digit)*.(decimal digit)+";
     - a rectangle of the form "rect(x, y, w, h)", with "x", "y", "w", and "h" being integers;
     - a "pressurepoints" of the form "press(p0, p1x, p1y, p2)", with "p0" and "p2" being integers, representing, respectively, the x-axes of the first and final points of the pressure, while "p1x" and "p1y" are an xy-coordinate for the middle point;
     - an actid (integer and/or symbolic actid name);
@@ -69,6 +80,14 @@ ugeeconfig xkeysyms
         - "funct(<functactid>)" where <functactid> is a function actid;
         - "sysop(<sysopactid>)" where <sysopactid> is a sysop actid;
         - "multim(<multimactid>)" where <multimactid> is a multimedia actid;
+
+
+NOTE: The current locale AFFECTS the needed xkeysyms to perform an action, in general, you want to consider the actual keys you press in order to produce a certain output instead of the output itself.
+For example, in Italian keyboards, in order to output the left bracket, you need to press AltGr and the grave accented e keys.
+If using an Italian locale, 'keys(bracketleft)' doesn't work, but 'keys(altgr+egrave)' does. For the same reason, `keys(bracketleft)` will correctly work on US locales.
+Other than using the "xkeysyms" operator, you can use utilities like xev, to correctly get the actual xkeysyms for the single keys of the keyboard.
+
+NOTE 2: Utilities like ibus still AFFECT the locale.
 """
 
 

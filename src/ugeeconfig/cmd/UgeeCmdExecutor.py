@@ -450,7 +450,7 @@ class UgeeCmdExecutor(object):
 
 
     def __handleXKeysyms(self):
-        print("Here follows the available X Keysyms:")
+        print("Here follows the available X Keysyms (if needed, use xev or similar utility and check for keysyms):")
         print()
         for i in Xlib.XK.get_available_augmented_keynames():
             print(i)
