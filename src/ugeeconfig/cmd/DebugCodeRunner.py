@@ -7,6 +7,7 @@
 import sys
 
 from .Value import *
+from ..xml.ActionElement import *
 
 
 DEBUG_FUNCTS = []
@@ -53,7 +54,13 @@ def valueInstanceTest():
 def customActionParserTest():
     lk = str(sys.argv[1])
     v = Value(lk)
-    print(v)
+
+    #print(v)
+    #print(type(v))
+    #print(type(v.v))
+
+    print(ActionElement._writeKeystrokesDebug(v.v.getKeystrokes()))
+
 
 
 

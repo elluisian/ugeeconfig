@@ -267,6 +267,24 @@ class ActionElement(XMLElement):
         return ",".join(kstrkLs)
 
 
+
+    @staticmethod
+    def _writeKeystrokesDebug(keystrokes):
+        kstrkLs = []
+
+        for keystrk in keystrokes:
+            kLs = []
+            for i in range(0, keystrk.getKeyNo()):
+                k = keystrk.getKey(i)
+                kLs.append("keycode %d (keysym 0x%x, %s) - %d:%d" % (k.getKeycode(), k.getKeysym(), k.getKeyname(), k.getKeysym(), k.getKeycode()))
+
+            kstrkLs.append("+".join(kLs))
+
+        return "\n".join(kstrkLs)
+
+
+
+
     @staticmethod
     def __writeMouse(mousekeys):
         klist = []

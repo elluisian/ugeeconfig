@@ -29,10 +29,10 @@ cd ugeeconfig
 
 In order for this program to work properly, you need:
 
-- `Python 3.13.3`: earlier versions should also work, I cannot guarantee it though;
+- `Python 3.11`: earlier versions should also work, I cannot guarantee it though;
 - The `python3-xlib` module: used to deal with XKeysyms;
 - The `python3-lxml` module: used to read/write XML files;
-- `bash 5.2.37`: earlier versions should also work, as long as the BASH\_SOURCE variable is supported;
+- `bash 5.2`: earlier versions should also work, as long as the BASH\_SOURCE variable is supported;
 - The utilities `realpath` and `dirname`: used by the `ugeeconfig.sh` script;
 
 If you also want to check the documentation out, you need:
@@ -406,6 +406,8 @@ In general, to create the correct custom action, you want to describe the set of
 Basically, for Italian keyboards, the correct custom action is `keys(altgr+egrave)`.
 
 
+
+
 ### Reading and saving configuration files
 
 Up to now, only a few props were shown, edited and documented, but all of this is useless if there is no way to actually make persistent changes.\
@@ -436,3 +438,46 @@ To do that, just use the following:
 ```
 ./ugeeconfig.sh to <pathdest>
 ```
+
+
+
+
+## Extra tips (independent of ugeeconfig)
+
+Here follows some additional tips I discovered on my own while using the UE16.
+Please note that these are not related to this utility, they are generic usage tips I discovered for myself and that I want to share to improve your experience.
+
+
+
+### Keystrokes keys recognized as other totally diferent keys
+
+Be sure your keyboard layout is properly set.
+It happened to me that, standard applications worked correctly with my layout, but the driver didn't recognize it properly, for some weird reason in fact, it required `bracketright` to zoom in GIMP, despite my earlier discussion on layouts!
+
+If you use input managers like `ibus` you should be fine, as it handles this problem in a neat way.
+If you do not use these and do not intend to, you can check your current keymap with the following command:
+
+```
+setxkbmap -query
+```
+
+If it does not correspond, then force it with:
+
+```
+setxkbmap it # change according to your particular locale
+```
+
+
+
+### Messages remove focus from windows in IceWM
+
+If IceWM is not properly configured, the messages window removes the focus from the program you're working on (e.g. GIMP), removing, this way, any possibility of interaction with said program.
+
+To fix this, add the following to the `winoptions` config file:
+
+```
+ugeeTablet.ugeeTablet.layer: AboveAll
+ugeeTablet.ugeeTablet.doNotFocus: 1
+```
+
+and restart IceWM.
