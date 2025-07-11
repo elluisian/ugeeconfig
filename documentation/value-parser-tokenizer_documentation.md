@@ -13,14 +13,26 @@ Apart from some different names, it should be very similar to the final implemen
 - [ACTID] = [INTEGER] | IDENTIFIER
 - [KNAME] = [INTEGER] | IDENTIFIER | TRUE | FALSE
 - [NUMERIC] = [INTEGER] | FLOAT
-- [INTEGER] = BINARY\_INTEGER, OCTAL\_INTEGER, DECIMAL\_INTEGER, HEXADECIMAL\_INTEGER
-- TRUE, FALSE, RECT, PRESS, EXEC, MOUSE, KEYS, (, ), +, "," (comma), $
+- [INTEGER] = BINARY\_INTEGER | OCTAL\_INTEGER | DECIMAL\_INTEGER | HEXADECIMAL\_INTEGER
+- TRUE
+- FALSE
+- RECT
+- PRESS
+- EXEC
+- MOUSE
+- KEYS
+- (
+- )
+- +
+- ,
+- $
 
 
 Please note that:
 
 - Whitespace is read by the parser, but is discarded;
 - "$" is a token indicating the end of input (EOI);
+- BINARY\_INTEGER, OCTAL\_INTEGER, DECIMAL\_INTEGER and HEXADECIMAL\_INTEGER are all the types of recognized integers (see section "Numeric tokenizer");
 
 
 

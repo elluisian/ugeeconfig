@@ -37,15 +37,30 @@
      <li>[ACTID] = [INTEGER] | IDENTIFIER</li>
      <li>[KNAME] = [INTEGER] | IDENTIFIER | TRUE | FALSE</li>
      <li>[NUMERIC] = [INTEGER] | FLOAT</li>
-     <li>[INTEGER] = BINARY_INTEGER, OCTAL_INTEGER, DECIMAL_INTEGER,
+     <li>[INTEGER] = BINARY_INTEGER | OCTAL_INTEGER | DECIMAL_INTEGER |
      HEXADECIMAL_INTEGER</li>
-     <li>TRUE, FALSE, RECT, PRESS, EXEC, MOUSE, KEYS, (, ), +, “,”
-     (comma), $</li>
+     <li>TRUE</li>
+     <li>FALSE</li>
+     <li>RECT</li>
+     <li>PRESS</li>
+     <li>EXEC</li>
+     <li>MOUSE</li>
+     <li>KEYS</li>
+     <li>(</li>
+     <li>)</li>
+     <li><ul>
+     <li></li>
+     </ul></li>
+     <li>,</li>
+     <li>$</li>
      </ul>
      <p>Please note that:</p>
      <ul>
      <li>Whitespace is read by the parser, but is discarded;</li>
      <li>“$” is a token indicating the end of input (EOI);</li>
+     <li>BINARY_INTEGER, OCTAL_INTEGER, DECIMAL_INTEGER and
+     HEXADECIMAL_INTEGER are all the types of recognized integers (see
+     section “Numeric tokenizer”);</li>
      </ul>
      <h2 id="non-terminals-productions">Non-terminals
      (=productions)</h2>

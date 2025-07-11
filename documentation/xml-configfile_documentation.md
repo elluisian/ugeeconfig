@@ -137,89 +137,96 @@ Theoretically, each keys/buttons/etc has its own particular default actionid tha
 Here follows the list of actionids that were found out during the development of ugeeconfig, these should be all, though I'm not sure:
 
 
-Actid |            Description/Effect |                                            Notes
-:----:|:-----------------------------:|:-----------------------------------------------:
-|     |   DRIVER FUNCTS. DESCRIPTIONS | All unusable except for "10" (No function set)
-    1 |                    Pen/Eraser |
-    2 |                     Mouse key |
-    3 |                     Keystroke |
-    4 |                        Device |
-    5 |               Run application |
-    6 |               System function |
-    7 |                    Multimedia |
-   10 |                   No function |                                No function set
-   11 |                     Customize |
-   12 |                       Default |
-|&nbsp;|                              |
-|     |        MOUSE KEY COMBINATIONS |
-  201 |                         Shift |
-  202 |                      Left Alt |
-  203 |                     Right Alt |
-  204 |                          Ctrl |
-  205 |                         Space |
-  206 |                    Left Click |
-  207 |                   Right Click |
-  208 |                  Scroll Click |
-  209 |             Left double click |
-  210 |                     Scroll up |
-  211 |                   Scroll down |
-|&nbsp;|                              |
-|     |        PREDEFINED KEY STROKES |
-  301 |                 Keystroke "B" |
-  302 |                 Keystroke "E" |
-  303 |               Keystroke "Alt" |
-  304 |             Keystroke "Space" |
-  305 |            Keystroke "Ctrl+S" |
-  306 |            Keystroke "Ctrl+Z" |
-  307 |        Keystroke "Ctrl+Alt+Z" |
-  308 |      Keystroke "Ctrl+Shift+Z" |
-  309 |                 Keystroke "V" |
-  310 |                 Keystroke "L" |
-  311 |            Keystroke "Ctrl+O" |
-  312 |            Keystroke "Ctrl+N" |
-  313 |      Keystroke "Ctrl+Shift+N" |
-  314 |            Keystroke "Ctrl+E" |
-  315 |                 Keystroke "F" |
-  316 |                 Keystroke "D" |
-  317 |                 Keystroke "X" |
-  318 |       Keystroke "Ctrl+Delete" |
-  319 |            Keystroke "Ctrl+C" |
-  320 |            Keystroke "Ctrl+V" |
-  321 |            Keystroke "Ctrl++" |
-  322 |            Keystroke "Ctrl+-" |
-  323 |               Keystroke "Tab" |
-  324 |                Keystroke "F5" |
-  325 |                 Keystroke "]" |
-  326 |                 Keystroke "[" |
-  327 |            Keystroke "Ctrl+]" |
-  328 |            Keystroke "Ctrl+[" |
-|&nbsp;|                              |
-|     |                     FUNCTIONS |
-  401 | Display/Hide Driver Interface |
-  402 |                Switch monitor |
-  403 |                    Pen/Eraser |
-  404 |                Precision mode |
-  405 |         Switch ring1 function |
-  406 |         Switch ring2 function |       Available only on devices with two rings
-  407 |          Change trackpad mode |    Not sure what "trackpad" is in this context
-  408 |                       [B]/[E] |
-  409 |                        Eraser |
-  410 |                     Desk keys |
-|&nbsp;|                              |
-|     |             SYSTEM OPERATIONS |
-  601 |                   Lock screen |                       Not working on GNU/Linux
-  602 |                      Shutdown |
-  603 |                     Hibernate |
-  604 |               Show activities |                       Not working on GNU/Linux
-  605 |                  Startup menu |                       Not working on GNU/Linux
-|&nbsp;|                              |
-|     |         MULTIMEDIA OPERATIONS |                None of these work on GNU/Linux
-  701 |                      Previous |
-  702 |                          Next |
-  703 |                    Play/Pause |
-  704 |                       Volume+ |
-  705 |                       Volume- |
-  706 |                          Mute |
+| Actid |            Description/Effect |                                            Notes |
+:------:|:-----------------------------:|:-------------------------------------------------:
+||||
+||||
+|       |   DRIVER FUNCTS. DESCRIPTIONS | All unusable except for "10" (No function set) |
+|     1 |                    Pen/Eraser ||
+|     2 |                     Mouse key ||
+|     3 |                     Keystroke ||
+|     4 |                        Device ||
+|     5 |               Run application ||
+|     6 |               System function ||
+|     7 |                    Multimedia ||
+|    10 |                   No function | No function set |
+|    11 |                     Customize ||
+|    12 |                       Default ||
+||||
+||||
+|       |        MOUSE KEY COMBINATIONS ||
+|   201 |                         Shift ||
+|   202 |                      Left Alt ||
+|   203 |                     Right Alt ||
+|   204 |                          Ctrl ||
+|   205 |                         Space ||
+|   206 |                    Left Click ||
+|   207 |                   Right Click ||
+|   208 |                  Scroll Click ||
+|   209 |             Left double click ||
+|   210 |                     Scroll up ||
+|   211 |                   Scroll down ||
+||||
+||||
+|       |        PREDEFINED KEY STROKES ||
+|   301 |                 Keystroke "B" ||
+|   302 |                 Keystroke "E" ||
+|   303 |               Keystroke "Alt" ||
+|   304 |             Keystroke "Space" ||
+|   305 |            Keystroke "Ctrl+S" ||
+|   306 |            Keystroke "Ctrl+Z" ||
+|   307 |        Keystroke "Ctrl+Alt+Z" ||
+|   308 |      Keystroke "Ctrl+Shift+Z" ||
+|   309 |                 Keystroke "V" ||
+|   310 |                 Keystroke "L" ||
+|   311 |            Keystroke "Ctrl+O" ||
+|   312 |            Keystroke "Ctrl+N" ||
+|   313 |      Keystroke "Ctrl+Shift+N" ||
+|   314 |            Keystroke "Ctrl+E" ||
+|   315 |                 Keystroke "F" ||
+|   316 |                 Keystroke "D" ||
+|   317 |                 Keystroke "X" ||
+|   318 |       Keystroke "Ctrl+Delete" ||
+|   319 |            Keystroke "Ctrl+C" ||
+|   320 |            Keystroke "Ctrl+V" ||
+|   321 |            Keystroke "Ctrl++" ||
+|   322 |            Keystroke "Ctrl+-" ||
+|   323 |               Keystroke "Tab" ||
+|   324 |                Keystroke "F5" ||
+|   325 |                 Keystroke "]" ||
+|   326 |                 Keystroke "[" ||
+|   327 |            Keystroke "Ctrl+]" ||
+|   328 |            Keystroke "Ctrl+[" ||
+||||
+||||
+|       |                     FUNCTIONS ||
+|   401 | Display/Hide Driver Interface ||
+|   402 |                Switch monitor ||
+|   403 |                    Pen/Eraser ||
+|   404 |                Precision mode ||
+|   405 |         Switch ring1 function ||
+|   406 |         Switch ring2 function | Available only on devices with two rings |
+|   407 |          Change trackpad mode | Not sure what "trackpad" is in this context |
+|   408 |                       [B]/[E] ||
+|   409 |                        Eraser ||
+|   410 |                     Desk keys ||
+||||
+||||
+|       |             SYSTEM OPERATIONS ||
+|   601 |                   Lock screen | Not working on GNU/Linux |
+|   602 |                      Shutdown ||
+|   603 |                     Hibernate ||
+|   604 |               Show activities | Not working on GNU/Linux |
+|   605 |                  Startup menu | Not working on GNU/Linux |
+||||
+||||
+|       |         MULTIMEDIA OPERATIONS | None of these work on GNU/Linux |
+|   701 |                      Previous ||
+|   702 |                          Next ||
+|   703 |                    Play/Pause ||
+|   704 |                       Volume+ ||
+|   705 |                       Volume- ||
+|   706 |                          Mute ||
 
 
 The configuring program makes a default config file with unique actid combinations per button/key etc for every single supported device. For more details check the "DefaultConfigs.py" file, which is responsible for the re-generation of the default XML config file.
@@ -272,7 +279,7 @@ KeyPress event, serial 38, synthetic NO, window 0x6000001,
     XmbLookupString gives 0 bytes: 
     XFilterEvent returns: False
 
-<[...]
+[...]
 
 KeyPress event, serial 38, synthetic NO, window 0x6000001,
     root 0x3e2, subw 0x6000002, time 37094557, (31,34), root:(1771,486),
