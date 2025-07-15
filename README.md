@@ -449,7 +449,7 @@ Please note that these are not related to this utility, they are generic usage t
 
 
 
-### Keystrokes keys recognized as other totally diferent keys
+### Keystrokes keys recognized as other totally different keys
 
 Be sure your keyboard layout is properly set.
 It happened to me that, standard applications worked correctly with my layout, but the driver didn't recognize it properly, for some weird reason in fact, it required `bracketright` to zoom in GIMP, despite my earlier discussion on layouts!
@@ -478,6 +478,11 @@ To fix this, add the following to the `winoptions` config file:
 ```
 ugeeTablet.ugeeTablet.layer: AboveAll
 ugeeTablet.ugeeTablet.doNotFocus: 1
+ugeeTablet.ugeeTablet.ignoreWinList: 1
+ugeeTablet.ugeeTablet.ignoreTaskBar: 1
 ```
 
 and restart IceWM.
+
+The first option tells IceWM to keep the window above everything else, the second tells the desktop environment not to change the focus, allowing you to continue working properly.
+The last two options instruct IceWM to not show the message window in the windows' list and taskbar, as it is pretty useless to do so.

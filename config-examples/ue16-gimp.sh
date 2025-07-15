@@ -60,4 +60,6 @@ ue16.tablet.r.wheel_movement2.label 'Undo/Redo' \
 ue16.tablet.r.wheel_movement2.ccw_label 'Undo last operation' \
 ue16.tablet.r.wheel_movement2.cw_label 'Redo last operation' \
 ue16.tablet.r.wheel_movement2.ccw_action 'keys(ctrl+z)' \
-ue16.tablet.r.wheel_movement2.cw_action 'keys(ctrl+y)'
+ue16.tablet.r.wheel_movement2.cw_action 'keys(ctrl+y)' \
+ue16.tablet.r.wheel_movement3.usage 'usg_nop' \
+ue16.tablet.r.wheel_movement4.usage 'usg_nop' \
